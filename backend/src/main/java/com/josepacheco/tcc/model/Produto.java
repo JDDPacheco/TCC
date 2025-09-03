@@ -3,11 +3,15 @@ package com.josepacheco.tcc.model;
 import jakarta.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "tipo_produto", discriminatorType = DiscriminatorType.STRING)
 public class Produto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String nomeComercial;
 
     @Column(nullable = false, unique = true)
     private String ean;

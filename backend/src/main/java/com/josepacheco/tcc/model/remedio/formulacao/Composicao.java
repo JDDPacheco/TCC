@@ -1,4 +1,4 @@
-package com.josepacheco.tcc.model.formulacao;
+package com.josepacheco.tcc.model.remedio.formulacao;
 
 import jakarta.persistence.*;
 

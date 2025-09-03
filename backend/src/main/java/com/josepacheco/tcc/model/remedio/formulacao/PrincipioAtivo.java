@@ -1,4 +1,4 @@
-package com.josepacheco.tcc.model.formulacao;
+package com.josepacheco.tcc.model.remedio.formulacao;
 
 import jakarta.persistence.*;
 
@@ -6,24 +6,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Formula {
+public class PrincipioAtivo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany
-    @JoinTable(
-            name = "formula_composicao",
-            joinColumns = @JoinColumn(name = "formula_id"),
-            inverseJoinColumns = @JoinColumn(name = "composicao_id")
-    )
+    @Column(nullable = false, unique = true)
+    private String nome;
+
+    @OneToMany(mappedBy = "principioAtivo")
     private List<Composicao> composicoes = new ArrayList<>();
 
-    public Formula() {}
+    public PrincipioAtivo() {}
 
-    public Formula(List<Composicao> composicoes) {
+    public PrincipioAtivo(String nome, List<Composicao> composicoes) {
+        this.nome = nome;
         this.composicoes = composicoes;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public List<Composicao> getComposicoes() {
