@@ -2,22 +2,42 @@ package com.josepacheco.tcc.model.formulacao;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class PrincipioAtivo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    
-    private String principioAtivo;
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String nome;
+
+    @OneToMany(mappedBy = "principioAtivo")
+    private List<Composicao> composicoes = new ArrayList<>();
 
     public PrincipioAtivo() {}
 
-    public String getPrincipioAtivo() {
-        return principioAtivo;
+    public PrincipioAtivo(String nome, List<Composicao> composicoes) {
+        this.nome = nome;
+        this.composicoes = composicoes;
     }
 
-    public void setPrincipioAtivo(String principioAtivo) {
-        this.principioAtivo = principioAtivo;
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public List<Composicao> getComposicoes() {
+        return composicoes;
+    }
+
+    public void setComposicoes(List<Composicao> composicoes) {
+        this.composicoes = composicoes;
     }
 }
