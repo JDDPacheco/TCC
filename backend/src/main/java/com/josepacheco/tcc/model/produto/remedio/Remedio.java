@@ -1,15 +1,13 @@
-package com.josepacheco.tcc.model.remedio;
+package com.josepacheco.tcc.model.produto.remedio;
 
-import com.josepacheco.tcc.model.Produto;
-import com.josepacheco.tcc.model.remedio.formulacao.Formula;
-import com.josepacheco.tcc.model.remedio.formulacao.MedidaBasica;
-import com.josepacheco.tcc.model.remedio.formulacao.UnidadeDeMedidaFarmacetica;
+import com.josepacheco.tcc.model.produto.Produto;
+import com.josepacheco.tcc.model.produto.remedio.formulacao.Formula;
+import com.josepacheco.tcc.model.produto.remedio.formulacao.MedidaBasica;
+import com.josepacheco.tcc.model.produto.remedio.receita.ControleReceita;
 import jakarta.persistence.*;
 
 @Entity
 @DiscriminatorValue("remedio")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "tipo_remedio", discriminatorType = DiscriminatorType.STRING)
 public class Remedio extends Produto {
 
     @ManyToOne
@@ -45,9 +43,18 @@ public class Remedio extends Produto {
     @JoinColumn(name = "medidaPeso")
     private MedidaBasica medidaPeso; // sempre em gramas (criar regra para adicionar automaticamente quando houver peso líquido)
 
+    @ManyToOne
+    @JoinColumn(name = "apresentacao", nullable = false)
+    private Apresentacao apresentacao;
+
+    @ManyToOne
+    @JoinColumn(name = "controle", nullable = false)
+    private ControleReceita controle;
+
+
     public Remedio() {}
 
-    public Remedio(Formula formula, Laboratorio laboratorio, float quantidadeDoses, UnidadeDeMedidaFarmacetica medidaDoses, float conteudo, MedidaBasica medidaConteudo, float pesoLiquido, MedidaBasica medidaPeso) {
+    public Remedio(Formula formula, Laboratorio laboratorio, float quantidadeDoses, UnidadeDeMedidaFarmacetica medidaDoses, float conteudo, MedidaBasica medidaConteudo, float pesoLiquido, MedidaBasica medidaPeso, Apresentacao apresentacao, ControleReceita controle) {
         this.formula = formula;
         this.laboratorio = laboratorio;
         this.quantidadeDoses = quantidadeDoses;
@@ -56,6 +63,8 @@ public class Remedio extends Produto {
         this.medidaConteudo = medidaConteudo;
         this.pesoLiquido = pesoLiquido;
         this.medidaPeso = medidaPeso;
+        this.apresentacao = apresentacao;
+        this.controle = controle;
     }
 
     public Formula getFormula() {
@@ -120,6 +129,22 @@ public class Remedio extends Produto {
 
     public void setMedidaPeso(MedidaBasica medidaPeso) {
         this.medidaPeso = medidaPeso;
+    }
+
+    public Apresentacao getApresentacao() {
+        return apresentacao;
+    }
+
+    public void setApresentacao(Apresentacao apresentacao) {
+        this.apresentacao = apresentacao;
+    }
+
+    public ControleReceita getControle() {
+        return controle;
+    }
+
+    public void setControle(ControleReceita controle) {
+        this.controle = controle;
     }
 }
 

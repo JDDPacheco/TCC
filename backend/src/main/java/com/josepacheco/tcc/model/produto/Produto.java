@@ -1,4 +1,4 @@
-package com.josepacheco.tcc.model;
+package com.josepacheco.tcc.model.produto;
 
 import jakarta.persistence.*;
 

@@ -1,6 +1,6 @@
-package com.josepacheco.tcc.model.remedio.formulacao;
+package com.josepacheco.tcc.model.produto.remedio.formulacao;
 
-import com.josepacheco.tcc.model.remedio.Remedio;
+import com.josepacheco.tcc.model.produto.remedio.Remedio;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

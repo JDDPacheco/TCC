@@ -1,9 +1,6 @@
-package com.josepacheco.tcc.model.remedio.formulacao;
+package com.josepacheco.tcc.model.produto.remedio;
 
-import com.josepacheco.tcc.model.Produto;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 public class UnidadeDeMedidaFarmacetica {
