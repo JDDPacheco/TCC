@@ -1,5 +1,6 @@
 package com.josepacheco.tcc.model.remedio.formulacao;
 
+import com.josepacheco.tcc.model.remedio.Remedio;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -20,10 +21,14 @@ public class Formula {
     )
     private List<Composicao> composicoes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "formula", fetch = FetchType.LAZY)
+    private List<Remedio> remedios = new ArrayList<>();
+
     public Formula() {}
 
-    public Formula(List<Composicao> composicoes) {
+    public Formula(List<Composicao> composicoes, List<Remedio> remedios) {
         this.composicoes = composicoes;
+        this.remedios = remedios;
     }
 
     public List<Composicao> getComposicoes() {
@@ -32,5 +37,13 @@ public class Formula {
 
     public void setComposicoes(List<Composicao> composicoes) {
         this.composicoes = composicoes;
+    }
+
+    public List<Remedio> getRemedios() {
+        return remedios;
+    }
+
+    public void setRemedios(List<Remedio> remedios) {
+        this.remedios = remedios;
     }
 }

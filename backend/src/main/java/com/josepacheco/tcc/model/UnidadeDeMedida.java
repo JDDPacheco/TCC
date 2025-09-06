@@ -2,8 +2,7 @@ package com.josepacheco.tcc.model;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
+// Essa Classe tem as unidades de medida genéricas para qualquer produto: Caixa (CX), Vidro (VD), Envelope (EV), Bisnaga (BG), Garrafa (GF), Unidade (UN)
 @Entity
 public class UnidadeDeMedida {
     @Id
@@ -15,9 +14,6 @@ public class UnidadeDeMedida {
 
     @Column(nullable = false, unique = true)
     private String sigla;
-
-    @OneToMany(mappedBy = "unidadeDeMedida", fetch = FetchType.LAZY)
-    private List<Produto> produtos;
 
     public UnidadeDeMedida() {
     }
@@ -41,13 +37,5 @@ public class UnidadeDeMedida {
 
     public void setSigla(String sigla) {
         this.sigla = sigla;
-    }
-
-    public List<Produto> getProdutos() {
-        return produtos;
-    }
-
-    public void setProdutos(List<Produto> produtos) {
-        this.produtos = produtos;
     }
 }
