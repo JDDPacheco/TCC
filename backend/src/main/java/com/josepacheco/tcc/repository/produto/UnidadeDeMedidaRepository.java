@@ -1,4 +1,4 @@
-package com.josepacheco.tcc.repository;
+package com.josepacheco.tcc.repository.produto;
 
 import com.josepacheco.tcc.model.produto.UnidadeDeMedida;
 import org.springframework.data.jpa.repository.JpaRepository;

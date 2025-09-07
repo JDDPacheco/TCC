@@ -19,6 +19,10 @@ public class Apresentacao {
     public Apresentacao() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getApresentacao() {
         return apresentacao;
     }

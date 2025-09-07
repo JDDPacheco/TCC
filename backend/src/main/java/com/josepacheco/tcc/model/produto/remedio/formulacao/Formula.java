@@ -21,15 +21,7 @@ public class Formula {
     )
     private List<Composicao> composicoes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "formula", fetch = FetchType.LAZY)
-    private List<Remedio> remedios = new ArrayList<>();
-
     public Formula() {}
-
-    public Formula(List<Composicao> composicoes, List<Remedio> remedios) {
-        this.composicoes = composicoes;
-        this.remedios = remedios;
-    }
 
     public List<Composicao> getComposicoes() {
         return composicoes;
@@ -39,11 +31,7 @@ public class Formula {
         this.composicoes = composicoes;
     }
 
-    public List<Remedio> getRemedios() {
-        return remedios;
-    }
-
-    public void setRemedios(List<Remedio> remedios) {
-        this.remedios = remedios;
+    public Long getId() {
+        return id;
     }
 }

@@ -15,14 +15,10 @@ public class PrincipioAtivo {
     @Column(nullable = false, unique = true)
     private String nome;
 
-    @OneToMany(mappedBy = "principioAtivo")
-    private List<Composicao> composicoes = new ArrayList<>();
-
     public PrincipioAtivo() {}
 
-    public PrincipioAtivo(String nome, List<Composicao> composicoes) {
-        this.nome = nome;
-        this.composicoes = composicoes;
+    public Long getId(){
+        return id;
     }
 
     public String getNome() {
@@ -31,13 +27,5 @@ public class PrincipioAtivo {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public List<Composicao> getComposicoes() {
-        return composicoes;
-    }
-
-    public void setComposicoes(List<Composicao> composicoes) {
-        this.composicoes = composicoes;
     }
 }

@@ -19,9 +19,8 @@ public class MedidaBasica {
     public MedidaBasica() {
     }
 
-    public MedidaBasica(String nome, String sigla) {
-        this.nome = nome;
-        this.sigla = sigla;
+    public Long getId() {
+        return id;
     }
 
     public String getNome() {

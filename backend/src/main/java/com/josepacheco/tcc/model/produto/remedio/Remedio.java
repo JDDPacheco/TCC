@@ -12,7 +12,7 @@ public class Remedio extends Produto {
 
     @ManyToOne
     @JoinColumn(name = "formula", nullable = false)
-    private Formula formula; // Formula do remédio
+    private Formula formula; // Fórmula do remédio
 
     @ManyToOne
     @JoinColumn(name = "laboratorio", nullable = false)
@@ -54,19 +54,6 @@ public class Remedio extends Produto {
 
     public Remedio() {}
 
-    public Remedio(Formula formula, Laboratorio laboratorio, float quantidadeDoses, UnidadeDeMedidaFarmacetica medidaDoses, float conteudo, MedidaBasica medidaConteudo, float pesoLiquido, MedidaBasica medidaPeso, Apresentacao apresentacao, ControleReceita controle) {
-        this.formula = formula;
-        this.laboratorio = laboratorio;
-        this.quantidadeDoses = quantidadeDoses;
-        this.medidaDoses = medidaDoses;
-        this.conteudo = conteudo;
-        this.medidaConteudo = medidaConteudo;
-        this.pesoLiquido = pesoLiquido;
-        this.medidaPeso = medidaPeso;
-        this.apresentacao = apresentacao;
-        this.controle = controle;
-    }
-
     public Formula getFormula() {
         return formula;
     }
@@ -81,6 +68,10 @@ public class Remedio extends Produto {
 
     public void setLaboratorio(Laboratorio laboratorio) {
         this.laboratorio = laboratorio;
+        // Garante que o outro lado do relacionamento também seja atualizado
+        if (laboratorio != null && !laboratorio.getRemedios().contains(this)) {
+            laboratorio.getRemedios().add(this);
+        }
     }
 
     public float getQuantidadeDoses() {

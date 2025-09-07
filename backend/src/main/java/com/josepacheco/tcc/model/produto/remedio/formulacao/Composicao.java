@@ -16,20 +16,21 @@ public class Composicao {
     @JoinColumn(name = "principioAtivo", nullable = false)
     private PrincipioAtivo principioAtivo;
 
-    @ManyToOne
-    @JoinColumn(name = "concentracao", nullable = false)
-    private Concentracao concentracao;
+    @Column(nullable = false)
+    private float quantiaPrincipio; // quantos grama, micrograma, miligrama do principio ativo tem em cada unidade de referencia
 
-    @ManyToMany(mappedBy = "composicoes", fetch = FetchType.LAZY)
-    private List<Formula> formulas = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "medidaPrincipio", nullable = false)
+    private MedidaBasica medidaPrincipio; // unidade de medida do principio em grama, micrograma, miligrama
+
+    @Column
+    private float quantiaExcipiente; // a quantidade referente da concentração, em branco quer dizer que é por dose (geralmente capsula/comprimido)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "medidaExcipiente")
+    private MedidaBasica medidaExcipiente; // unidade de medida do excipiente, normalmente em mililitros; em branco quer dizer que é por dose (geralmente capsula/comprimido)
 
     public Composicao() {
-    }
-
-    public Composicao(PrincipioAtivo principioAtivo, Concentracao concentracao, List<Formula> formulas) {
-        this.principioAtivo = principioAtivo;
-        this.concentracao = concentracao;
-        this.formulas = formulas;
     }
 
     public PrincipioAtivo getPrincipioAtivo() {
@@ -40,19 +41,50 @@ public class Composicao {
         this.principioAtivo = principioAtivo;
     }
 
-    public Concentracao getConcentracao() {
-        return concentracao;
+    public float getQuantiaPrincipio() {
+        return quantiaPrincipio;
     }
 
-    public void setConcentracao(Concentracao concentracao) {
-        this.concentracao = concentracao;
+    public void setQuantiaPrincipio(float quantiaPrincipio) {
+        this.quantiaPrincipio = quantiaPrincipio;
     }
 
-    public List<Formula> getFormulas() {
-        return formulas;
+    public MedidaBasica getMedidaPrincipio() {
+        return medidaPrincipio;
     }
 
-    public void setFormulas(List<Formula> formulas) {
-        this.formulas = formulas;
+    public void setMedidaPrincipio(MedidaBasica medidaPrincipio) {
+        this.medidaPrincipio = medidaPrincipio;
+    }
+
+    public float getQuantiaExcipiente() {
+        return quantiaExcipiente;
+    }
+
+    public void setQuantiaExcipiente(float quantiaExcipiente) {
+        this.quantiaExcipiente = quantiaExcipiente;
+    }
+
+    public MedidaBasica getMedidaExcipiente() {
+        return medidaExcipiente;
+    }
+
+    public void setMedidaExcipiente(MedidaBasica medidaExcipiente) {
+        this.medidaExcipiente = medidaExcipiente;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Composicao{" +
+                "principioAtivo=" + principioAtivo +
+                ", quantiaPrincipio=" + quantiaPrincipio +
+                ", medidaPrincipio=" + medidaPrincipio +
+                ", quantiaExcipiente=" + quantiaExcipiente +
+                ", medidaExcipiente=" + medidaExcipiente +
+                '}';
     }
 }
