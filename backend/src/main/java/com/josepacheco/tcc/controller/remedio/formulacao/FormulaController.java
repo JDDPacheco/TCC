@@ -1,8 +1,8 @@
 package com.josepacheco.tcc.controller.remedio.formulacao;
 
-import com.josepacheco.tcc.dto.produto.remedio.formulacao.ComposicaoInputDTO;
-import com.josepacheco.tcc.dto.produto.remedio.formulacao.ComposicaoOutputDTO;
-import com.josepacheco.tcc.service.remedio.formulacao.ComposicaoService;
+import com.josepacheco.tcc.dto.produto.remedio.formulacao.FormulaInputDTO;
+import com.josepacheco.tcc.dto.produto.remedio.formulacao.FormulaOutputDTO;
+import com.josepacheco.tcc.service.remedio.formulacao.FormulaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,25 +18,25 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/produto/remedio/formulacao/composicao")
-@Tag(name = "Composições", description = "Endpoints para gerenciamento de Composições de remédios (Princípio ativo e concentração).")
-public class ComposicaoController {
+@RequestMapping("/api/produto/remedio/formulacao/formula")
+@Tag(name = "Fórmulas", description = "Endpoints para gerenciamento de Fórmulas de remédios (conjunto de princípios ativos e suas concentrações).")
+public class FormulaController {
 
     @Autowired
-    private ComposicaoService composicaoService;
+    private FormulaService formulaService;
 
-    @Operation(summary = "Listar todos as composições")
+    @Operation(summary = "Listar todos as fórmulas.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Consulta realizada com sucesso, lista encontrada no banco de dados"),
             @ApiResponse(responseCode = "204", description = "Consulta realizada com sucesso, porém não há resgistro no banco de dados"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping
-    public ResponseEntity<List<ComposicaoOutputDTO>> list(){
+    public ResponseEntity<List<FormulaOutputDTO>> list(){
         try{
-            List<ComposicaoOutputDTO> concentracoesOutputDTOs = composicaoService.list();
-            if(!concentracoesOutputDTOs.isEmpty())
-                return new ResponseEntity<>(concentracoesOutputDTOs, HttpStatus.OK);
+            List<FormulaOutputDTO> formulasOutputDTOs = formulaService.list();
+            if(!formulasOutputDTOs.isEmpty())
+                return new ResponseEntity<>(formulasOutputDTOs, HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
@@ -44,18 +44,18 @@ public class ComposicaoController {
         }
     }
 
-    @Operation(summary = "Obter detalhes de uma composição pelo id")
+    @Operation(summary = "Obter detalhes de uma fórmula pelo id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Objeto encontrado no banco de dados"),
             @ApiResponse(responseCode = "404", description = "Objeto não encontrado no banco de dados"),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ComposicaoOutputDTO> detalhes(@PathVariable Long id){
+    public ResponseEntity<FormulaOutputDTO> detalhes(@PathVariable Long id){
         try{
-            ComposicaoOutputDTO concentracaoOutputDTO = composicaoService.getById(id);
-            if (concentracaoOutputDTO != null) {
-                return new ResponseEntity<>(concentracaoOutputDTO, HttpStatus.OK);
+            FormulaOutputDTO formulaOutputDTO = formulaService.getById(id);
+            if (formulaOutputDTO != null) {
+                return new ResponseEntity<>(formulaOutputDTO, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -64,34 +64,34 @@ public class ComposicaoController {
         }
     }
 
-    @Operation(summary = "Criar uma nova composição.")
+    @Operation(summary = "Criar uma nova fórmula.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Objeto criado no banco de dados com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Há dados de entrada incorretos, verificar schema e exemplos."),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ComposicaoOutputDTO> create(@Valid @RequestBody ComposicaoInputDTO concentracaoInputDTO){
+    public ResponseEntity<FormulaOutputDTO> create(@Valid @RequestBody FormulaInputDTO formulaInputDTO){
         try{
-            ComposicaoOutputDTO concentracaoOutputDTO = composicaoService.create(concentracaoInputDTO);
+            FormulaOutputDTO concentracaoOutputDTO = formulaService.create(formulaInputDTO);
             return new ResponseEntity<>(concentracaoOutputDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @Operation(summary = "Atualizar uma composição existente pelo id")
+    @Operation(summary = "Atualizar uma fórmula existente pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Objeto atualizado no banco de dados com sucesso!"),
             @ApiResponse(responseCode = "404", description = "Objeto não encontrado no banco de dados."),
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ComposicaoOutputDTO> update(@PathVariable Long id, @Valid @RequestBody ComposicaoInputDTO concentracaoInputDTO) {
+    public ResponseEntity<FormulaOutputDTO> update(@PathVariable Long id, @Valid @RequestBody FormulaInputDTO formulaInputDTO) {
         try {
-            ComposicaoOutputDTO concentracaoOutputDTO = composicaoService.update(id, concentracaoInputDTO);
-            if (concentracaoOutputDTO != null) {
-                return new ResponseEntity<>(concentracaoOutputDTO, HttpStatus.OK);
+            FormulaOutputDTO formulaOutputDTO = formulaService.update(id, formulaInputDTO);
+            if (formulaOutputDTO != null) {
+                return new ResponseEntity<>(formulaOutputDTO, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -100,7 +100,7 @@ public class ComposicaoController {
         }
     }
 
-    @Operation(summary = "Excluir uma composição pelo id")
+    @Operation(summary = "Excluir uma fórmula pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Objeto excluído do banco de dados com sucesso!"),
             @ApiResponse(responseCode = "404", description = "Objeto não encontrado no banco de dados."),
@@ -109,7 +109,7 @@ public class ComposicaoController {
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
         try {
-            if (composicaoService.delete(id)) {
+            if (formulaService.delete(id)) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);

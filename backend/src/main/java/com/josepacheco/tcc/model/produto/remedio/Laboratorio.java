@@ -1,8 +1,6 @@
 package com.josepacheco.tcc.model.produto.remedio;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Laboratorio {
@@ -17,21 +15,11 @@ public class Laboratorio {
     @Column(nullable = false, unique = true)
     private String nomeFantasia; // nome completo da empresa
 
-    @OneToMany(mappedBy = "laboratorio", fetch = FetchType.LAZY)
-    private List<Remedio> remedios = new ArrayList<>(); //OnetoMany
-
     public Laboratorio() {
     }
 
-    public Laboratorio(String marca, String nomeFantasia) {
-        this.marca = marca;
-        this.nomeFantasia = nomeFantasia;
-    }
-
-    public Laboratorio(String marca, String nomeFantasia, List<Remedio> remedios) {
-        this.marca = marca;
-        this.nomeFantasia = nomeFantasia;
-        this.remedios = remedios;
+    public Long getId() {
+        return id;
     }
 
     public String getMarca() {
@@ -48,13 +36,5 @@ public class Laboratorio {
 
     public void setNomeFantasia(String nomeFantasia) {
         this.nomeFantasia = nomeFantasia;
-    }
-
-    public List<Remedio> getRemedios() {
-        return remedios;
-    }
-
-    public void setRemedios(List<Remedio> remedios) {
-        this.remedios = remedios;
     }
 }

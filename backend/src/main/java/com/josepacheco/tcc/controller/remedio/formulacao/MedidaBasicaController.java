@@ -35,7 +35,7 @@ public class MedidaBasicaController {
     public ResponseEntity<List<MedidaBasicaOutputDTO>> list(){
         try{
             List<MedidaBasicaOutputDTO> medidaBasicaDTOs = medidaBasicaService.list();
-            if(medidaBasicaDTOs != null)
+            if(!medidaBasicaDTOs.isEmpty())
                 return new ResponseEntity<>(medidaBasicaDTOs, HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

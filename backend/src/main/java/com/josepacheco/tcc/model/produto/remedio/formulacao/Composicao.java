@@ -79,12 +79,26 @@ public class Composicao {
 
     @Override
     public String toString() {
-        return "Composicao{" +
-                "principioAtivo=" + principioAtivo +
-                ", quantiaPrincipio=" + quantiaPrincipio +
-                ", medidaPrincipio=" + medidaPrincipio +
-                ", quantiaExcipiente=" + quantiaExcipiente +
-                ", medidaExcipiente=" + medidaExcipiente +
-                '}';
+        String quantiaPrincipioStr = (quantiaPrincipio % 1 == 0) ?
+                String.valueOf((int) quantiaPrincipio) :
+                String.valueOf(quantiaPrincipio);
+
+        String quantiaExcipienteStr = (quantiaExcipiente % 1 == 0) ?
+                String.valueOf((int) quantiaExcipiente) :
+                String.valueOf(quantiaExcipiente);
+
+        if (quantiaExcipiente == 0.0) {
+            return principioAtivo.getNome() + " " +
+                    quantiaPrincipioStr + " " + medidaPrincipio.getSigla();
+        } else if(quantiaExcipiente == 1.0){
+            return principioAtivo.getNome() + " " +
+                    quantiaPrincipioStr + " " + medidaPrincipio.getSigla() +
+                    " / " + medidaExcipiente.getSigla();
+        } else {
+            return principioAtivo.getNome() + " " +
+                    quantiaPrincipioStr + " " + medidaPrincipio.getSigla() +
+                    " / " + quantiaExcipienteStr + " " + medidaExcipiente.getSigla();
+        }
     }
+
 }

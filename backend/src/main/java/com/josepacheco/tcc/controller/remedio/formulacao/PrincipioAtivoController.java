@@ -35,7 +35,7 @@ public class PrincipioAtivoController {
     public ResponseEntity<List<PrincipioAtivoOutputDTO>> list(){
         try{
             List<PrincipioAtivoOutputDTO> principiosAtivosDTOs = principioAtivoService.list();
-            if(principiosAtivosDTOs != null)
+            if(!principiosAtivosDTOs.isEmpty())
                 return new ResponseEntity<>(principiosAtivosDTOs, HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

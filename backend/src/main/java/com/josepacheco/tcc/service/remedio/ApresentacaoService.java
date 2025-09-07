@@ -34,8 +34,12 @@ public class ApresentacaoService {
     }
 
     public ApresentacaoOutputDTO update(Long id, String nome){
+        // Encontrando apresentação no banco de dados
         Apresentacao apresentacao = apresentacaoRepository.getReferenceById(id);
+
+        // Alterando os valores antigos pelo novos
         apresentacao.setApresentacao(nome);
+
         return new ApresentacaoOutputDTO(apresentacaoRepository.save(apresentacao));
     }
 

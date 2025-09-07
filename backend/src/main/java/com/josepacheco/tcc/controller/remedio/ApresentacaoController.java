@@ -35,7 +35,7 @@ public class ApresentacaoController {
     public ResponseEntity<List<ApresentacaoOutputDTO>> list(){
         try{
             List<ApresentacaoOutputDTO> apresentacoesOutputDTOs = apresentacaoService.list();
-            if(apresentacoesOutputDTOs != null)
+            if(!apresentacoesOutputDTOs.isEmpty())
                 return new ResponseEntity<>(apresentacoesOutputDTOs, HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -68,10 +68,6 @@ public class Remedio extends Produto {
 
     public void setLaboratorio(Laboratorio laboratorio) {
         this.laboratorio = laboratorio;
-        // Garante que o outro lado do relacionamento também seja atualizado
-        if (laboratorio != null && !laboratorio.getRemedios().contains(this)) {
-            laboratorio.getRemedios().add(this);
-        }
     }
 
     public float getQuantidadeDoses() {
