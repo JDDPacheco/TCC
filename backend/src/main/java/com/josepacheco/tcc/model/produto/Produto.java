@@ -18,12 +18,12 @@ public class Produto {
 
     @ManyToOne
     @JoinColumn(name = "unidadeDeMedida", nullable = false)
-    private UnidadeDeMedida unidadeDeMedida;
+    private MedidaPadrao unidadeDeMedida;
 
     public Produto() {
     }
 
-    public Produto(String ean, UnidadeDeMedida unidadeDeMedida) {
+    public Produto(String ean, MedidaPadrao unidadeDeMedida) {
         this.ean = ean;
         this.unidadeDeMedida = unidadeDeMedida;
     }
@@ -36,11 +36,11 @@ public class Produto {
         this.ean = ean;
     }
 
-    public UnidadeDeMedida getUnidadeDeMedida() {
+    public MedidaPadrao getUnidadeDeMedida() {
        return unidadeDeMedida;
     }
 
-    public void setUnidadeDeMedida(UnidadeDeMedida unidadeDeMedida) {
+    public void setUnidadeDeMedida(MedidaPadrao unidadeDeMedida) {
         this.unidadeDeMedida = unidadeDeMedida;
     }
 }

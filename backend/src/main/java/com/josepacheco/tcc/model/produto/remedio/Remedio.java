@@ -1,9 +1,12 @@
 package com.josepacheco.tcc.model.produto.remedio;
 
 import com.josepacheco.tcc.model.produto.Produto;
+import com.josepacheco.tcc.model.produto.remedio.atributos.Apresentacao;
+import com.josepacheco.tcc.model.produto.remedio.atributos.Laboratorio;
+import com.josepacheco.tcc.model.produto.remedio.atributos.MedidaFarmaceutica;
 import com.josepacheco.tcc.model.produto.remedio.formulacao.Formula;
 import com.josepacheco.tcc.model.produto.remedio.formulacao.MedidaBasica;
-import com.josepacheco.tcc.model.produto.remedio.receita.ControleReceita;
+import com.josepacheco.tcc.model.produto.remedio.atributos.ControleReceita;
 import jakarta.persistence.*;
 
 @Entity
@@ -23,7 +26,7 @@ public class Remedio extends Produto {
 
     @ManyToOne
     @JoinColumn(name = "medidaDoses")
-    private UnidadeDeMedidaFarmacetica medidaDoses; // Comprimidos, cápsulas moles, pastilhas, doses e etc...
+    private MedidaFarmaceutica medidaDoses; // Comprimidos, cápsulas moles, pastilhas, doses e etc...
 
     @Column
     private float conteudo; // medida do volume de conteudo da embalegem; normalmente usado apenas em remédio líquidos/pastosos
@@ -78,11 +81,11 @@ public class Remedio extends Produto {
         this.quantidadeDoses = quantidadeDoses;
     }
 
-    public UnidadeDeMedidaFarmacetica getMedidaDoses() {
+    public MedidaFarmaceutica getMedidaDoses() {
         return medidaDoses;
     }
 
-    public void setMedidaDoses(UnidadeDeMedidaFarmacetica medidaDoses) {
+    public void setMedidaDoses(MedidaFarmaceutica medidaDoses) {
         this.medidaDoses = medidaDoses;
     }
 

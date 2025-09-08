@@ -1,39 +1,38 @@
-package com.josepacheco.tcc.model.produto.remedio.formulacao;
+package com.josepacheco.tcc.model.produto.remedio.atributos;
 
 import jakarta.persistence.*;
 
-// Esta Classe é para unidades de medidas do S.I. (grama, litro e suas derivações)
 @Entity
-public class MedidaBasica {
+public class Apresentacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String nome;
-
-    @Column(nullable = false, unique = true)
     private String sigla;
 
-    public MedidaBasica() {
+    @Column(nullable = false, unique = true)
+    private String apresentacao;
+
+    public Apresentacao() {
     }
 
-    public MedidaBasica(String sigla, String nome) {
-        this.nome = nome;
+    public Apresentacao(String sigla, String apresentacao) {
         this.sigla = sigla;
+        this.apresentacao = apresentacao;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getApresentacao() {
+        return apresentacao;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setApresentacao(String apresentacao) {
+        this.apresentacao = apresentacao;
     }
 
     public String getSigla() {
@@ -43,5 +42,4 @@ public class MedidaBasica {
     public void setSigla(String sigla) {
         this.sigla = sigla;
     }
-
 }

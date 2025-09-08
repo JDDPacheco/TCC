@@ -1,6 +1,6 @@
 package com.josepacheco.tcc.dto.produto.remedio;
 
-import com.josepacheco.tcc.model.produto.remedio.Laboratorio;
+import com.josepacheco.tcc.model.produto.remedio.atributos.Laboratorio;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 
