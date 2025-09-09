@@ -1,7 +1,6 @@
 package com.josepacheco.tcc.service.produto.remedio.formulacao;
 
-import com.josepacheco.tcc.dto.produto.remedio.formulacao.ComposicaoInputDTO;
-import com.josepacheco.tcc.dto.produto.remedio.formulacao.ComposicaoOutputDTO;
+import com.josepacheco.tcc.dto.produto.remedio.formulacao.ComposicaoDTO;
 import com.josepacheco.tcc.model.produto.remedio.formulacao.Composicao;
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.ComposicaoRepository;
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.MedidaBasicaRepository;
@@ -24,29 +23,29 @@ public class ComposicaoService {
     @Autowired
     private PrincipioAtivoRepository principioAtivoRepository;
 
-    public List<ComposicaoOutputDTO> list(){
+    public List<ComposicaoDTO> list(){
         List<Composicao> composicoes = composicaoRepository.findAll();
-        List<ComposicaoOutputDTO> concentracoesDTOs = new ArrayList<>();
+        List<ComposicaoDTO> concentracoesDTOs = new ArrayList<>();
         for (Composicao composicao: composicoes){
-            concentracoesDTOs.add(new ComposicaoOutputDTO(composicao));
+            concentracoesDTOs.add(new ComposicaoDTO(composicao));
         }
         return concentracoesDTOs;
     }
 
-    public ComposicaoOutputDTO getById(Long id){
-        return new ComposicaoOutputDTO(composicaoRepository.getReferenceById(id));
+    public ComposicaoDTO getById(Long id){
+        return new ComposicaoDTO(composicaoRepository.getReferenceById(id));
     }
 
-    public ComposicaoOutputDTO create(ComposicaoInputDTO composicaoInputDTO){
-        return new ComposicaoOutputDTO(composicaoRepository.save(composicaoInputDTO.build(medidaBasicaRepository, principioAtivoRepository)));
+    public ComposicaoDTO create(ComposicaoDTO composicaoDTO){
+        return new ComposicaoDTO(composicaoRepository.save(composicaoDTO.build(medidaBasicaRepository, principioAtivoRepository)));
     }
 
-    public ComposicaoOutputDTO update(Long id, ComposicaoInputDTO composicaoInputDTO){
+    public ComposicaoDTO update(Long id, ComposicaoDTO composicaoDTO){
         // Encontrando concentracao no banco de dados
         Composicao composicaoEncontrada = composicaoRepository.getReferenceById(id);
 
         // Montando nova concentracao com valores novos
-        Composicao composicaoNova = composicaoInputDTO.build(medidaBasicaRepository, principioAtivoRepository);
+        Composicao composicaoNova = composicaoDTO.build(medidaBasicaRepository, principioAtivoRepository);
 
         // Alterando os valores antigos pelo novos
         composicaoEncontrada.setPrincipioAtivo(composicaoNova.getPrincipioAtivo());
@@ -55,7 +54,7 @@ public class ComposicaoService {
         composicaoEncontrada.setQuantiaExcipiente(composicaoNova.getQuantiaExcipiente());
         composicaoEncontrada.setMedidaExcipiente(composicaoNova.getMedidaExcipiente());
 
-        return new ComposicaoOutputDTO(composicaoRepository.save(composicaoEncontrada));
+        return new ComposicaoDTO(composicaoRepository.save(composicaoEncontrada));
     }
 
     public boolean delete(Long id){

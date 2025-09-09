@@ -1,7 +1,6 @@
 package com.josepacheco.tcc.service.produto.remedio.atributos;
 
-import com.josepacheco.tcc.dto.produto.remedio.LaboratorioInputDTO;
-import com.josepacheco.tcc.dto.produto.remedio.LaboratorioOutputDTO;
+import com.josepacheco.tcc.dto.produto.remedio.LaboratorioDTO;
 import com.josepacheco.tcc.model.produto.remedio.atributos.Laboratorio;
 import com.josepacheco.tcc.repository.produto.remedio.atributos.LaboratorioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,35 +15,35 @@ public class LaboratorioService {
     @Autowired
     private LaboratorioRepository laboratorioRepository;
 
-    public List<LaboratorioOutputDTO> list(){
+    public List<LaboratorioDTO> list(){
         List<Laboratorio> laboratorios = laboratorioRepository.findAll();
-        List<LaboratorioOutputDTO> laboratoriosOutputDTOs = new ArrayList<>();
+        List<LaboratorioDTO> laboratoriosOutputDTOs = new ArrayList<>();
         for(Laboratorio laboratorio: laboratorios){
-            laboratoriosOutputDTOs.add(new LaboratorioOutputDTO(laboratorio));
+            laboratoriosOutputDTOs.add(new LaboratorioDTO(laboratorio));
         }
         return laboratoriosOutputDTOs;
     }
 
-    public LaboratorioOutputDTO getById(Long id){
-        return new LaboratorioOutputDTO(laboratorioRepository.getReferenceById(id));
+    public LaboratorioDTO getById(Long id){
+        return new LaboratorioDTO(laboratorioRepository.getReferenceById(id));
     }
 
-    public LaboratorioOutputDTO create(LaboratorioInputDTO laboratorioInputDTO){
-        return new LaboratorioOutputDTO(laboratorioRepository.save(laboratorioInputDTO.build()));
+    public LaboratorioDTO create(LaboratorioDTO laboratorioDTO){
+        return new LaboratorioDTO(laboratorioRepository.save(laboratorioDTO.build()));
     }
 
-    public LaboratorioOutputDTO update(Long id, LaboratorioInputDTO laboratorioInputDTO){
+    public LaboratorioDTO update(Long id, LaboratorioDTO laboratorioDTO){
         // Encontrando laboratório no banco de dados
         Laboratorio laboratorioEncontrado = laboratorioRepository.getReferenceById(id);
 
         // Montando novo laboratório com valores novos
-        Laboratorio laboratorioNovo = laboratorioInputDTO.build();
+        Laboratorio laboratorioNovo = laboratorioDTO.build();
 
         // Alterando os valores antigos pelo novos
         laboratorioEncontrado.setMarca(laboratorioNovo.getMarca());
         laboratorioEncontrado.setNomeFantasia(laboratorioNovo.getNomeFantasia());
 
-        return new LaboratorioOutputDTO(laboratorioRepository.save(laboratorioEncontrado));
+        return new LaboratorioDTO(laboratorioRepository.save(laboratorioEncontrado));
     }
 
     public boolean delete(Long id){

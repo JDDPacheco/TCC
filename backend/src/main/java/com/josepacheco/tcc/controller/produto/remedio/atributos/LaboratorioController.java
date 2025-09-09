@@ -1,7 +1,6 @@
 package com.josepacheco.tcc.controller.produto.remedio.atributos;
 
-import com.josepacheco.tcc.dto.produto.remedio.LaboratorioInputDTO;
-import com.josepacheco.tcc.dto.produto.remedio.LaboratorioOutputDTO;
+import com.josepacheco.tcc.dto.produto.remedio.LaboratorioDTO;
 import com.josepacheco.tcc.service.produto.remedio.atributos.LaboratorioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,9 +31,9 @@ public class LaboratorioController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping
-    public ResponseEntity<List<LaboratorioOutputDTO>> list(){
+    public ResponseEntity<List<LaboratorioDTO>> list(){
         try{
-            List<LaboratorioOutputDTO> laboratoriosOutputDTOs = laboratorioService.list();
+            List<LaboratorioDTO> laboratoriosOutputDTOs = laboratorioService.list();
             if(!laboratoriosOutputDTOs.isEmpty())
                 return new ResponseEntity<>(laboratoriosOutputDTOs, HttpStatus.OK);
             else
@@ -51,9 +50,9 @@ public class LaboratorioController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LaboratorioOutputDTO> detalhes(@PathVariable Long id){
+    public ResponseEntity<LaboratorioDTO> detalhes(@PathVariable Long id){
         try{
-            LaboratorioOutputDTO laboratorioOutputDTO = laboratorioService.getById(id);
+            LaboratorioDTO laboratorioOutputDTO = laboratorioService.getById(id);
             if (laboratorioOutputDTO != null) {
                 return new ResponseEntity<>(laboratorioOutputDTO, HttpStatus.OK);
             } else {
@@ -71,9 +70,9 @@ public class LaboratorioController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LaboratorioOutputDTO> create(@Valid @RequestBody LaboratorioInputDTO laboratorioInputDTO){
+    public ResponseEntity<LaboratorioDTO> create(@Valid @RequestBody LaboratorioDTO laboratorioDTO){
         try{
-            LaboratorioOutputDTO laboratorioOutputDTO = laboratorioService.create(laboratorioInputDTO);
+            LaboratorioDTO laboratorioOutputDTO = laboratorioService.create(laboratorioDTO);
             return new ResponseEntity<>(laboratorioOutputDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -87,9 +86,9 @@ public class LaboratorioController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<LaboratorioOutputDTO> update(@PathVariable Long id, @Valid @RequestBody LaboratorioInputDTO laboratorioInputDTO) {
+    public ResponseEntity<LaboratorioDTO> update(@PathVariable Long id, @Valid @RequestBody LaboratorioDTO laboratorioDTO) {
         try {
-            LaboratorioOutputDTO laboratorioOutputDTO = laboratorioService.update(id, laboratorioInputDTO);
+            LaboratorioDTO laboratorioOutputDTO = laboratorioService.update(id, laboratorioDTO);
             if (laboratorioOutputDTO != null) {
                 return new ResponseEntity<>(laboratorioOutputDTO, HttpStatus.OK);
             } else {

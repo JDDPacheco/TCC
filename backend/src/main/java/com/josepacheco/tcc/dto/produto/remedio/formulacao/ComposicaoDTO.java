@@ -7,8 +7,13 @@ import com.josepacheco.tcc.repository.produto.remedio.formulacao.MedidaBasicaRep
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.PrincipioAtivoRepository;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Null;
 
-public class ComposicaoInputDTO {
+public class ComposicaoDTO {
+
+    @Null(message = "O id deve ser omitido na criação e atualização.")
+    @Schema(description = "código id da concentracao, é a chave. (deve ser null ou omitido na criação e atualização)", example = "1")
+    private Long id;
 
     @NotBlank(message = "O nome do princípio ativo é obrigatório.")
     @Schema(description = "nome do princípio ativo", example = "dipirona")
@@ -22,17 +27,31 @@ public class ComposicaoInputDTO {
     @Schema(description = "unidade de medida de princípio ativo", example = "mg")
     private String unidadeMedidaPrincipio;
 
-    @Schema(description = "quantia de excipiente (não enviar quando for por comprimido ou dose)", example = "5")
+    @Schema(description = "quantia de excipiente (deixar em branco quando for por comprimido ou dose)", example = "5")
     private float quantiaExcipiente;
 
-    @Schema(description = "unidade de medida do excipiente (não enviar quando for compirmido ou dose)", example = "ml")
+    @Schema(description = "unidade de medida do excipiente (deixar em branco quando for compirmido ou dose)", example = "ml")
     private String unidadeMedidaExcipiente;
+
+    public ComposicaoDTO() {
+    }
+
+    public ComposicaoDTO(Composicao composicao){
+        this.id = composicao.getId();
+        this.principioAtivo = composicao.getPrincipioAtivo().getNome();
+        this.quantiaPrincipio = composicao.getQuantiaPrincipio();
+        this.unidadeMedidaPrincipio = composicao.getMedidaPrincipio().getSigla();
+        this.quantiaExcipiente = composicao.getQuantiaExcipiente();
+        if(composicao.getMedidaExcipiente() == null)
+            this.unidadeMedidaExcipiente = null;
+        else
+            this.unidadeMedidaExcipiente = composicao.getMedidaExcipiente().getSigla();
+    }
 
     public Composicao build(MedidaBasicaRepository medidaBasicaRepository, PrincipioAtivoRepository principioAtivoRepository){
         // Resolvendo dependências
         PrincipioAtivo principioAtivo = principioAtivoRepository.findByNome(this.principioAtivo);
         MedidaBasica medidaBasicaPrincipio = medidaBasicaRepository.findBySigla(this.unidadeMedidaPrincipio);
-//        MedidaBasica medidaBasicaExcipiente = medidaBasicaRepository.findBySigla(this.unidadeMedidaExcipiente);
 
         // Criando objeto de Concentração
         Composicao composicao = new Composicao();
@@ -48,29 +67,8 @@ public class ComposicaoInputDTO {
         return composicao;
     }
 
-    public ComposicaoInputDTO() {
-    }
-
-    public ComposicaoInputDTO(String principioAtivo, float quantiaPrincipio, String unidadeMedidaPrincipio, float quantiaExcipiente, String unidadeMedidaExcipiente) {
-        this.principioAtivo = principioAtivo;
-        this.quantiaPrincipio = quantiaPrincipio;
-        this.unidadeMedidaPrincipio = unidadeMedidaPrincipio;
-        this.quantiaExcipiente = quantiaExcipiente;
-        this.unidadeMedidaExcipiente = unidadeMedidaExcipiente;
-    }
-
-    public ComposicaoInputDTO(String principioAtivo, float quantiaPrincipio, String unidadeMedidaPrincipio) {
-        this.principioAtivo = principioAtivo;
-        this.quantiaPrincipio = quantiaPrincipio;
-        this.unidadeMedidaPrincipio = unidadeMedidaPrincipio;
-    }
-
-    public String getPrincipioAtivo() {
-        return principioAtivo;
-    }
-
-    public void setPrincipioAtivo(String principioAtivo) {
-        this.principioAtivo = principioAtivo;
+    public Long getId() {
+        return id;
     }
 
     public float getQuantiaPrincipio() {
@@ -104,4 +102,13 @@ public class ComposicaoInputDTO {
     public void setUnidadeMedidaExcipiente(String unidadeMedidaExcipiente) {
         this.unidadeMedidaExcipiente = unidadeMedidaExcipiente;
     }
+
+    public String getPrincipioAtivo() {
+        return principioAtivo;
+    }
+
+    public void setPrincipioAtivo(String principioAtivo) {
+        this.principioAtivo = principioAtivo;
+    }
+
 }

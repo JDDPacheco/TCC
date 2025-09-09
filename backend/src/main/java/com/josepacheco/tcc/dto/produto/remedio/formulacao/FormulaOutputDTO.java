@@ -15,7 +15,7 @@ public class FormulaOutputDTO {
     @Schema(description = "Lista das composições da fórmula", example = "[dipirona 30 mg,...]")
     private List<String> composicoes = new ArrayList<>();
 
-   public FormulaOutputDTO(Formula formula){
+    public FormulaOutputDTO(Formula formula){
        this.id = formula.getId();
         List<Composicao> composicoes = formula.getComposicoes();
         for (Composicao composicao: composicoes){

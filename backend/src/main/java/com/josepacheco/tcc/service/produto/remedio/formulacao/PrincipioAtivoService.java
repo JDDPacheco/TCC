@@ -1,7 +1,6 @@
 package com.josepacheco.tcc.service.produto.remedio.formulacao;
 
-import com.josepacheco.tcc.dto.produto.remedio.formulacao.PrincipioAtivoInputDTO;
-import com.josepacheco.tcc.dto.produto.remedio.formulacao.PrincipioAtivoOutputDTO;
+import com.josepacheco.tcc.dto.produto.remedio.formulacao.PrincipioAtivoDTO;
 import com.josepacheco.tcc.model.produto.remedio.formulacao.PrincipioAtivo;
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.PrincipioAtivoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,27 +15,27 @@ public class PrincipioAtivoService {
     @Autowired
     private PrincipioAtivoRepository principioAtivoRepository;
 
-    public List<PrincipioAtivoOutputDTO> list(){
+    public List<PrincipioAtivoDTO> list(){
         List<PrincipioAtivo> principiosAtivos = principioAtivoRepository.findAll();
-        List<PrincipioAtivoOutputDTO> principiosAtivosDTOs = new ArrayList<>();
+        List<PrincipioAtivoDTO> principiosAtivosDTOs = new ArrayList<>();
         for(PrincipioAtivo principioAtivo: principiosAtivos){
-            principiosAtivosDTOs.add(new PrincipioAtivoOutputDTO(principioAtivo));
+            principiosAtivosDTOs.add(new PrincipioAtivoDTO(principioAtivo));
         }
         return principiosAtivosDTOs;
     }
 
-    public PrincipioAtivoOutputDTO getById(Long id){
-        return new PrincipioAtivoOutputDTO(principioAtivoRepository.getReferenceById(id));
+    public PrincipioAtivoDTO getById(Long id){
+        return new PrincipioAtivoDTO(principioAtivoRepository.getReferenceById(id));
     }
 
-    public PrincipioAtivoOutputDTO create(PrincipioAtivoInputDTO principioAtivoDTO){
-        return new PrincipioAtivoOutputDTO(principioAtivoRepository.save(principioAtivoDTO.build()));
+    public PrincipioAtivoDTO create(PrincipioAtivoDTO principioAtivoDTO){
+        return new PrincipioAtivoDTO(principioAtivoRepository.save(principioAtivoDTO.build()));
     }
 
-    public PrincipioAtivoOutputDTO update(Long id, String nome){
+    public PrincipioAtivoDTO update(Long id, String nome){
         PrincipioAtivo principioAtivo = principioAtivoRepository.getReferenceById(id);
         principioAtivo.setNome(nome);
-        return new PrincipioAtivoOutputDTO(principioAtivoRepository.save(principioAtivo));
+        return new PrincipioAtivoDTO(principioAtivoRepository.save(principioAtivo));
     }
 
     public boolean delete(Long id){

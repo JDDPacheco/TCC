@@ -1,7 +1,6 @@
 package com.josepacheco.tcc.controller.produto.remedio.formulacao;
 
-import com.josepacheco.tcc.dto.produto.remedio.formulacao.ComposicaoInputDTO;
-import com.josepacheco.tcc.dto.produto.remedio.formulacao.ComposicaoOutputDTO;
+import com.josepacheco.tcc.dto.produto.remedio.formulacao.ComposicaoDTO;
 import com.josepacheco.tcc.service.produto.remedio.formulacao.ComposicaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,9 +31,9 @@ public class ComposicaoController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping
-    public ResponseEntity<List<ComposicaoOutputDTO>> list(){
+    public ResponseEntity<List<ComposicaoDTO>> list(){
         try{
-            List<ComposicaoOutputDTO> concentracoesOutputDTOs = composicaoService.list();
+            List<ComposicaoDTO> concentracoesOutputDTOs = composicaoService.list();
             if(!concentracoesOutputDTOs.isEmpty())
                 return new ResponseEntity<>(concentracoesOutputDTOs, HttpStatus.OK);
             else
@@ -51,9 +50,9 @@ public class ComposicaoController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ComposicaoOutputDTO> detalhes(@PathVariable Long id){
+    public ResponseEntity<ComposicaoDTO> detalhes(@PathVariable Long id){
         try{
-            ComposicaoOutputDTO concentracaoOutputDTO = composicaoService.getById(id);
+            ComposicaoDTO concentracaoOutputDTO = composicaoService.getById(id);
             if (concentracaoOutputDTO != null) {
                 return new ResponseEntity<>(concentracaoOutputDTO, HttpStatus.OK);
             } else {
@@ -71,9 +70,9 @@ public class ComposicaoController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ComposicaoOutputDTO> create(@Valid @RequestBody ComposicaoInputDTO concentracaoInputDTO){
+    public ResponseEntity<ComposicaoDTO> create(@Valid @RequestBody ComposicaoDTO composicaoDTO){
         try{
-            ComposicaoOutputDTO concentracaoOutputDTO = composicaoService.create(concentracaoInputDTO);
+            ComposicaoDTO concentracaoOutputDTO = composicaoService.create(composicaoDTO);
             return new ResponseEntity<>(concentracaoOutputDTO, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -87,9 +86,9 @@ public class ComposicaoController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ComposicaoOutputDTO> update(@PathVariable Long id, @Valid @RequestBody ComposicaoInputDTO concentracaoInputDTO) {
+    public ResponseEntity<ComposicaoDTO> update(@PathVariable Long id, @Valid @RequestBody ComposicaoDTO composicaoDTO) {
         try {
-            ComposicaoOutputDTO concentracaoOutputDTO = composicaoService.update(id, concentracaoInputDTO);
+            ComposicaoDTO concentracaoOutputDTO = composicaoService.update(id, composicaoDTO);
             if (concentracaoOutputDTO != null) {
                 return new ResponseEntity<>(concentracaoOutputDTO, HttpStatus.OK);
             } else {

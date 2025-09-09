@@ -1,7 +1,6 @@
 package com.josepacheco.tcc.controller.produto.remedio.formulacao;
 
-import com.josepacheco.tcc.dto.produto.remedio.formulacao.PrincipioAtivoInputDTO;
-import com.josepacheco.tcc.dto.produto.remedio.formulacao.PrincipioAtivoOutputDTO;
+import com.josepacheco.tcc.dto.produto.remedio.formulacao.PrincipioAtivoDTO;
 import com.josepacheco.tcc.service.produto.remedio.formulacao.PrincipioAtivoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -32,9 +31,9 @@ public class PrincipioAtivoController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping
-    public ResponseEntity<List<PrincipioAtivoOutputDTO>> list(){
+    public ResponseEntity<List<PrincipioAtivoDTO>> list(){
         try{
-            List<PrincipioAtivoOutputDTO> principiosAtivosDTOs = principioAtivoService.list();
+            List<PrincipioAtivoDTO> principiosAtivosDTOs = principioAtivoService.list();
             if(!principiosAtivosDTOs.isEmpty())
                 return new ResponseEntity<>(principiosAtivosDTOs, HttpStatus.OK);
             else
@@ -51,9 +50,9 @@ public class PrincipioAtivoController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PrincipioAtivoOutputDTO> detalhes(@PathVariable Long id){
+    public ResponseEntity<PrincipioAtivoDTO> detalhes(@PathVariable Long id){
         try{
-            PrincipioAtivoOutputDTO medidaBasicaOutputDTO = principioAtivoService.getById(id);
+            PrincipioAtivoDTO medidaBasicaOutputDTO = principioAtivoService.getById(id);
             if (medidaBasicaOutputDTO != null) {
                 return new ResponseEntity<>(medidaBasicaOutputDTO, HttpStatus.OK);
             } else {
@@ -71,9 +70,9 @@ public class PrincipioAtivoController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PrincipioAtivoOutputDTO> create(@Valid @RequestBody PrincipioAtivoInputDTO principioAtivoDTO){
+    public ResponseEntity<PrincipioAtivoDTO> create(@Valid @RequestBody PrincipioAtivoDTO principioAtivoDTO){
         try{
-            PrincipioAtivoOutputDTO createdPrincipioAtivo = principioAtivoService.create(principioAtivoDTO);
+            PrincipioAtivoDTO createdPrincipioAtivo = principioAtivoService.create(principioAtivoDTO);
             return new ResponseEntity<>(createdPrincipioAtivo, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -87,9 +86,9 @@ public class PrincipioAtivoController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PrincipioAtivoOutputDTO> update(@PathVariable Long id, @Valid @RequestBody String principioNome) {
+    public ResponseEntity<PrincipioAtivoDTO> update(@PathVariable Long id, @Valid @RequestBody String principioNome) {
         try {
-            PrincipioAtivoOutputDTO principioAtivoDTO = principioAtivoService.update(id, principioNome);
+            PrincipioAtivoDTO principioAtivoDTO = principioAtivoService.update(id, principioNome);
             if (principioAtivoDTO != null) {
                 return new ResponseEntity<>(principioAtivoDTO, HttpStatus.OK);
             } else {
