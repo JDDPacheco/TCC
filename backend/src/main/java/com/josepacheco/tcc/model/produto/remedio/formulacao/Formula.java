@@ -32,4 +32,5 @@ public class Formula {
     public Long getId() {
         return id;
     }
-}
+
+    }

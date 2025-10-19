@@ -23,7 +23,8 @@ public class Produto {
     public Produto() {
     }
 
-    public Produto(String ean, MedidaPadrao unidadeDeMedida) {
+    public Produto(String nomeComercial, String ean, MedidaPadrao unidadeDeMedida) {
+        this.nomeComercial = nomeComercial;
         this.ean = ean;
         this.unidadeDeMedida = unidadeDeMedida;
     }
@@ -34,6 +35,14 @@ public class Produto {
 
     public void setEan(String ean) {
         this.ean = ean;
+    }
+
+    public String getNomeComercial() {
+        return nomeComercial;
+    }
+
+    public void setNomeComercial(String nomeComercial) {
+        this.nomeComercial = nomeComercial;
     }
 
     public MedidaPadrao getUnidadeDeMedida() {
