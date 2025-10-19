@@ -14,7 +14,7 @@ public class Preco {
 
     // Relacionamento com o Produto
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produto_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Produto produto;
 
     @Column(nullable = false, precision = 10, scale = 2)

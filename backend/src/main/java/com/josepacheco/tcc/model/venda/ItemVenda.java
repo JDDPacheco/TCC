@@ -13,16 +13,16 @@ public class ItemVenda {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "venda_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Venda venda;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produto_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Produto produto;
 
     // Rastreia o lote específico que foi vendido (chave para controle de medicamentos)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lote_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Lote lote;
 
     @Column(nullable = false)

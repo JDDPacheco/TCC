@@ -11,7 +11,7 @@ public class Estoque {
 
     // Ligação com o Lote, o que o liga implicitamente ao Produto
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "lote_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Lote lote;
 
     @Column(nullable = false)

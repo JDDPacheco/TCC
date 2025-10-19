@@ -12,7 +12,7 @@ public class Lote {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produto_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Produto produto;
 
     @Column(nullable = false, unique = true)

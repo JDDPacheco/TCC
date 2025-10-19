@@ -18,7 +18,7 @@ public class Venda {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal valorTotal; // Soma do valor de todos os itens
 
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemVenda> itens; // Relacionamento bidirecional com os itens
 
     public Venda() {}
