@@ -42,9 +42,7 @@ public class RemedioOutputDTO extends ProdutoDTO {
     public RemedioOutputDTO() {}
 
     public RemedioOutputDTO(Remedio remedio){
-        this.setNomeComercial(remedio.getNomeComercial());
-        this.setEan(remedio.getEan());
-        this.setUnidadeDeMedida(remedio.getUnidadeDeMedida().getSigla());
+        super(remedio);
         this.formula = remedio.getFormula().getComposicoes()
                 .stream()
                 .map(Composicao::toString) // Chama o seu metodo toString() para cada composição

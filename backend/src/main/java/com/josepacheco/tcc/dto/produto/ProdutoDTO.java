@@ -20,7 +20,7 @@ public class ProdutoDTO {
     @Schema(description = "sigla da unidade de medida padrão, deve ser obtida da lista em /api/produto/medida_padrao", example = "'CX' para Caixa ou 'UN' para unidade")
     private String unidadeDeMedida;
 
-    @NotBlank(message = "Especicificar o tipo de produto: [em branco] para produtos não medicamento, 'remedio' para remedios em geral, 'generico' para medicamentos genéricos")
+    @NotBlank(message = "Especicificar o tipo de produto: 'geral' para produtos não medicamento, 'remedio' para remedios em geral, 'generico' para medicamentos genéricos")
     private String tipoProduto;
 
     public ProdutoDTO(){}
@@ -29,7 +29,10 @@ public class ProdutoDTO {
         this.ean = produto.getEan();
         this.nomeComercial = produto.getNomeComercial();
         this.unidadeDeMedida = produto.getUnidadeDeMedida().getSigla();
-        this.tipoProduto = produto.getClass().getSimpleName().toLowerCase(); // Ex: "produto", "remedio", "generico"
+        if(!produto.getClass().getSimpleName().equalsIgnoreCase("produto"))
+            this.tipoProduto = produto.getClass().getSimpleName().toLowerCase(); // Ex: "remedio", "generico"
+        else
+            this.tipoProduto = "geral";
     }
 
     public Produto build(MedidaPadraoRepository medidaPadraoRepository){
