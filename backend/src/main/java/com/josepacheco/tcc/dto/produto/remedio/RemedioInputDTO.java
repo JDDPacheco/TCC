@@ -94,41 +94,41 @@ public class RemedioInputDTO extends ProdutoDTO {
         return remedio;
     }
 
-    public Remedio build(FormulaRepository formulaRepository, LaboratorioRepository laboratorioRepository,
-                         MedidaBasicaRepository medidaBasicaRepository, ApresentacaoRepository apresentacaoRepository,
-                         MedidaPadraoRepository medidaPadraoRepository, ControleReceitaRepository controleReceitaRepository){
-
-        // Resolvendo dependências obrigatórias
-        MedidaPadrao medidaPadraoProduto = medidaPadraoRepository.findBySigla(this.getUnidadeDeMedida()); // superclasse
-        Formula formula = formulaRepository.getReferenceById(this.idFormula);
-        Laboratorio laboratorio = laboratorioRepository.getReferenceById(this.idLaboratorio);
-        Apresentacao apresentacao = apresentacaoRepository.findBySigla(this.siglaApresentacao);
-        ControleReceita controleReceita = controleReceitaRepository.findByTipo(this.tipoControle);
-        MedidaBasica medidaBasica = medidaBasicaRepository.findBySigla(this.siglaMedidaConteudo);
-
-        // Criando objeto de Remedio
-        Remedio remedio = new Remedio();
-
-        // Inserindo dados obrigatórios
-        remedio.setEan(this.getEan());
-        remedio.setNomeComercial(this.getNomeComercial());
-        remedio.setUnidadeDeMedida(medidaPadraoProduto);
-        remedio.setFormula(formula);
-        remedio.setLaboratorio(laboratorio);
-        remedio.setApresentacao(apresentacao);
-        remedio.setControle(controleReceita);
-        remedio.setMedidaConteudo(medidaBasica);
-
-        // Inserindo dados opcionais
-        // Verificando se os dados do peso líquido foram fornecidos antes de atribuir.
-        if (this.pesoLiquido != 0) {
-            remedio.setPesoLiquido(this.pesoLiquido);
-            MedidaBasica medida = medidaBasicaRepository.findBySigla("g");
-            remedio.setMedidaPeso(medida);
-        }
-
-        return remedio;
-    }
+//    public Remedio build(FormulaRepository formulaRepository, LaboratorioRepository laboratorioRepository,
+//                         MedidaBasicaRepository medidaBasicaRepository, ApresentacaoRepository apresentacaoRepository,
+//                         MedidaPadraoRepository medidaPadraoRepository, ControleReceitaRepository controleReceitaRepository){
+//
+//        // Resolvendo dependências obrigatórias
+//        MedidaPadrao medidaPadraoProduto = medidaPadraoRepository.findBySigla(this.getUnidadeDeMedida()); // superclasse
+//        Formula formula = formulaRepository.getReferenceById(this.idFormula);
+//        Laboratorio laboratorio = laboratorioRepository.getReferenceById(this.idLaboratorio);
+//        Apresentacao apresentacao = apresentacaoRepository.findBySigla(this.siglaApresentacao);
+//        ControleReceita controleReceita = controleReceitaRepository.findByTipo(this.tipoControle);
+//        MedidaBasica medidaBasica = medidaBasicaRepository.findBySigla(this.siglaMedidaConteudo);
+//
+//        // Criando objeto de Remedio
+//        Remedio remedio = new Remedio();
+//
+//        // Inserindo dados obrigatórios
+//        remedio.setEan(this.getEan());
+//        remedio.setNomeComercial(this.getNomeComercial());
+//        remedio.setUnidadeDeMedida(medidaPadraoProduto);
+//        remedio.setFormula(formula);
+//        remedio.setLaboratorio(laboratorio);
+//        remedio.setApresentacao(apresentacao);
+//        remedio.setControle(controleReceita);
+//        remedio.setMedidaConteudo(medidaBasica);
+//
+//        // Inserindo dados opcionais
+//        // Verificando se os dados do peso líquido foram fornecidos antes de atribuir.
+//        if (this.pesoLiquido != 0) {
+//            remedio.setPesoLiquido(this.pesoLiquido);
+//            MedidaBasica medida = medidaBasicaRepository.findBySigla("g");
+//            remedio.setMedidaPeso(medida);
+//        }
+//
+//        return remedio;
+//    }
 
     public Long getIdFormula() {
         return idFormula;

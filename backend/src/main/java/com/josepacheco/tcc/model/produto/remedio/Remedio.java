@@ -29,7 +29,7 @@ public class Remedio extends Produto {
     private MedidaFarmaceutica medidaDoses; // Comprimidos, cápsulas moles, pastilhas, doses e etc...
 
     @Column
-    private float conteudo; // medida do volume de conteudo da embalegem; normalmente usado apenas em remédio líquidos/pastosos
+    private float conteudo; // medida do volume de conteudo da embalagem; normalmente usado apenas em remédio líquidos/pastosos
 
     @ManyToOne
     @JoinColumn(name = "medidaConteudo")
