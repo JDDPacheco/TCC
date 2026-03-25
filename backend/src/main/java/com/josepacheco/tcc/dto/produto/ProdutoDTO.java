@@ -1,10 +1,26 @@
 package com.josepacheco.tcc.dto.produto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.josepacheco.tcc.dto.produto.remedio.GenericoInputDTO;
+import com.josepacheco.tcc.dto.produto.remedio.RemedioInputDTO;
 import com.josepacheco.tcc.model.produto.Produto;
 import com.josepacheco.tcc.model.produto.MedidaPadrao;
 import com.josepacheco.tcc.repository.produto.MedidaPadraoRepository;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "tipoProduto", // O campo no seu JSON
+        visible = true
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = RemedioInputDTO.class, name = "remedio"),
+        @JsonSubTypes.Type(value = GenericoInputDTO.class, name = "generico"),
+        @JsonSubTypes.Type(value = ProdutoDTO.class, name = "geral")
+})
 
 public class ProdutoDTO {
 

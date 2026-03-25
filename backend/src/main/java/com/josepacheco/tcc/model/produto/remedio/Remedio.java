@@ -14,11 +14,11 @@ import jakarta.persistence.*;
 public class Remedio extends Produto {
 
     @ManyToOne
-    @JoinColumn(name = "formula", nullable = false)
+    @JoinColumn(name = "formula")
     private Formula formula; // Fórmula do remédio
 
     @ManyToOne
-    @JoinColumn(name = "laboratorio", nullable = false)
+    @JoinColumn(name = "laboratorio")
     private Laboratorio laboratorio; // Laboratorio que fabrica o remédio
 
     @Column
@@ -47,11 +47,11 @@ public class Remedio extends Produto {
     private MedidaBasica medidaPeso; // sempre em gramas (criar regra para adicionar automaticamente quando houver peso líquido)
 
     @ManyToOne
-    @JoinColumn(name = "apresentacao", nullable = false)
+    @JoinColumn(name = "apresentacao")
     private Apresentacao apresentacao;
 
     @ManyToOne
-    @JoinColumn(name = "controle", nullable = false)
+    @JoinColumn(name = "controle")
     private ControleReceita controle;
 
 
