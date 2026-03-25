@@ -22,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,7 @@ public class ProdutoService {
     @Autowired
     private MedidaBasicaRepository medidaBasicaRepository;
 
-    public List<ProdutoDTO> listAll() {
+    public List<ProdutoDTO> list() {
         return produtoRepository.findAll().stream()
                 .map(this::convertToOutputDTO) // Usa o metodo auxiliar de conversão
                 .collect(Collectors.toList());

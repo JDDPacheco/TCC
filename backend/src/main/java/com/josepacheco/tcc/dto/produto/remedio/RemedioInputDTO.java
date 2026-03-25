@@ -33,7 +33,7 @@ public class RemedioInputDTO extends ProdutoDTO {
     @Schema(description = "quantidade de doses (comprimidos, cápsulas, pastilhas, doses e etc...) do remédio, apenas número (quando houver)", example = "120")
     private float quantidadeDoses;
 
-    @Schema(description = "sigla da unidade de medidad de doses - conforme encontrado em: /api/produto/remedio/medida_farmaceutica", example = "CP (para comprimidos)")
+    @Schema(description = "sigla da unidade de medidada de doses - conforme encontrado em: /api/produto/remedio/medida_farmaceutica", example = "CP (para comprimidos)")
     private String siglaMedidaDoses;
 
     @Schema(description = "conteúdo medida do volume de conteúdo da embalagem; normalmente usado apenas em remédio líquidos/pastosos (apenas números)", example = "20")
@@ -67,7 +67,7 @@ public class RemedioInputDTO extends ProdutoDTO {
         Formula formula = formulaRepository.getReferenceById(this.idFormula);
         Laboratorio laboratorio = laboratorioRepository.getReferenceById(this.idLaboratorio);
         Apresentacao apresentacao = apresentacaoRepository.findBySigla(this.siglaApresentacao);
-        ControleReceita controleReceita = controleReceitaRepository.findByTipo(this.tipoControle);
+        ControleReceita controleReceita = controleReceitaRepository.findByTipoControle(this.tipoControle);
         MedidaFarmaceutica medidaFarmaceutica = medidaFarmaceuticaRepository.findBySigla(this.siglaMedidaDoses);
 
         // Criando objeto de Remedio

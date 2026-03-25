@@ -8,6 +8,4 @@ import java.util.Optional;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     Optional<Produto> findByEan(String ean);
-    Produto findByTipo_produto(String tipo);
-    List<Produto> findAllByTipo_produto(String tipo);
 }

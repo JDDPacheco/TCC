@@ -4,5 +4,5 @@ import com.josepacheco.tcc.model.produto.remedio.atributos.ControleReceita;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ControleReceitaRepository extends JpaRepository<ControleReceita, Long> {
-    ControleReceita findByTipo(String tipo);
+    ControleReceita findByTipoControle(String tipo);
 }
