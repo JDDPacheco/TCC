@@ -17,6 +17,10 @@ public class PrincipioAtivo {
 
     public PrincipioAtivo() {}
 
+    public PrincipioAtivo(String nome) {
+        this.nome = nome;
+    }
+
     public Long getId(){
         return id;
     }

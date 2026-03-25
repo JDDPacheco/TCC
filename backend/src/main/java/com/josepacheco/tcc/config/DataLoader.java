@@ -4,12 +4,17 @@ import com.josepacheco.tcc.model.produto.MedidaPadrao;
 import com.josepacheco.tcc.model.produto.remedio.atributos.Apresentacao;
 import com.josepacheco.tcc.model.produto.remedio.atributos.ControleReceita;
 import com.josepacheco.tcc.model.produto.remedio.atributos.MedidaFarmaceutica;
+import com.josepacheco.tcc.model.produto.remedio.formulacao.Composicao;
 import com.josepacheco.tcc.model.produto.remedio.formulacao.MedidaBasica;
+import com.josepacheco.tcc.model.produto.remedio.formulacao.PrincipioAtivo;
 import com.josepacheco.tcc.repository.produto.MedidaPadraoRepository;
 import com.josepacheco.tcc.repository.produto.remedio.atributos.ApresentacaoRepository;
 import com.josepacheco.tcc.repository.produto.remedio.atributos.ControleReceitaRepository;
 import com.josepacheco.tcc.repository.produto.remedio.atributos.MedidaFarmaceuticaRepository;
+import com.josepacheco.tcc.repository.produto.remedio.formulacao.ComposicaoRepository;
+import com.josepacheco.tcc.repository.produto.remedio.formulacao.FormulaRepository;
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.MedidaBasicaRepository;
+import com.josepacheco.tcc.repository.produto.remedio.formulacao.PrincipioAtivoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -31,6 +36,15 @@ public class DataLoader implements CommandLineRunner {
 
     @Autowired
     private MedidaPadraoRepository medidaPadraoRepo;
+
+    @Autowired
+    private PrincipioAtivoRepository principioAtivoRepo;
+
+    @Autowired
+    private ComposicaoRepository composicaoRepo;
+
+    @Autowired
+    private FormulaRepository formulaRepo;
 
     @Override
     public void run(String... args) throws Exception {
@@ -108,6 +122,16 @@ public class DataLoader implements CommandLineRunner {
             medidaPadraoRepo.save(new MedidaPadrao("L", "Litro"));
             medidaPadraoRepo.save(new MedidaPadrao("DZ", "Dúzia"));
             medidaPadraoRepo.save(new MedidaPadrao("PT", "Pacote"));
+        }
+
+        // --- Princípios Ativos ---
+        if (principioAtivoRepo.count() == 0) {
+            principioAtivoRepo.save(new PrincipioAtivo("dipirona monoidratada"));
+        }
+
+        // --- Composição ---
+        if (composicaoRepo.count() == 0) {
+            composicaoRepo.save(new Composicao("dipirona monoidratada"));
         }
 
     }
