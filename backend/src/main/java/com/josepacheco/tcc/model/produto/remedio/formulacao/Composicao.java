@@ -33,7 +33,11 @@ public class Composicao {
     public Composicao() {
     }
 
-
+    public Composicao(PrincipioAtivo principioAtivo, float quantiaPrincipio, MedidaBasica medidaPrincipio) {
+        this.principioAtivo = principioAtivo;
+        this.quantiaPrincipio = quantiaPrincipio;
+        this.medidaPrincipio = medidaPrincipio;
+    }
 
     public PrincipioAtivo getPrincipioAtivo() {
         return principioAtivo;

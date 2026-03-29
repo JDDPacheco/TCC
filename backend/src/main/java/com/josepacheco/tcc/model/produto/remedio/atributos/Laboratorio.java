@@ -18,6 +18,11 @@ public class Laboratorio {
     public Laboratorio() {
     }
 
+    public Laboratorio(String marca, String nomeFantasia) {
+        this.marca = marca;
+        this.nomeFantasia = nomeFantasia;
+    }
+
     public Long getId() {
         return id;
     }

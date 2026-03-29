@@ -1,5 +1,6 @@
 package com.josepacheco.tcc.model.produto.remedio;
 
+import com.josepacheco.tcc.model.produto.MedidaPadrao;
 import com.josepacheco.tcc.model.produto.Produto;
 import com.josepacheco.tcc.model.produto.remedio.atributos.Apresentacao;
 import com.josepacheco.tcc.model.produto.remedio.atributos.Laboratorio;
@@ -54,8 +55,21 @@ public class Remedio extends Produto {
     @JoinColumn(name = "controle")
     private ControleReceita controle;
 
-
     public Remedio() {}
+
+    public Remedio(String nomeComercial, String ean, MedidaPadrao unidadeDeMedida, Formula formula, Laboratorio laboratorio, float quantidadeDoses, MedidaFarmaceutica medidaDoses, float conteudo, MedidaBasica medidaConteudo, float pesoLiquido, MedidaBasica medidaPeso, Apresentacao apresentacao, ControleReceita controle) {
+        super(nomeComercial, ean, unidadeDeMedida);
+        this.formula = formula;
+        this.laboratorio = laboratorio;
+        this.quantidadeDoses = quantidadeDoses;
+        this.medidaDoses = medidaDoses;
+        this.conteudo = conteudo;
+        this.medidaConteudo = medidaConteudo;
+        this.pesoLiquido = pesoLiquido;
+        this.medidaPeso = medidaPeso;
+        this.apresentacao = apresentacao;
+        this.controle = controle;
+    }
 
     public Formula getFormula() {
         return formula;

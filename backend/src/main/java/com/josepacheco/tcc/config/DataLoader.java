@@ -3,13 +3,16 @@ package com.josepacheco.tcc.config;
 import com.josepacheco.tcc.model.produto.MedidaPadrao;
 import com.josepacheco.tcc.model.produto.remedio.atributos.Apresentacao;
 import com.josepacheco.tcc.model.produto.remedio.atributos.ControleReceita;
+import com.josepacheco.tcc.model.produto.remedio.atributos.Laboratorio;
 import com.josepacheco.tcc.model.produto.remedio.atributos.MedidaFarmaceutica;
 import com.josepacheco.tcc.model.produto.remedio.formulacao.Composicao;
+import com.josepacheco.tcc.model.produto.remedio.formulacao.Formula;
 import com.josepacheco.tcc.model.produto.remedio.formulacao.MedidaBasica;
 import com.josepacheco.tcc.model.produto.remedio.formulacao.PrincipioAtivo;
 import com.josepacheco.tcc.repository.produto.MedidaPadraoRepository;
 import com.josepacheco.tcc.repository.produto.remedio.atributos.ApresentacaoRepository;
 import com.josepacheco.tcc.repository.produto.remedio.atributos.ControleReceitaRepository;
+import com.josepacheco.tcc.repository.produto.remedio.atributos.LaboratorioRepository;
 import com.josepacheco.tcc.repository.produto.remedio.atributos.MedidaFarmaceuticaRepository;
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.ComposicaoRepository;
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.FormulaRepository;
@@ -18,6 +21,9 @@ import com.josepacheco.tcc.repository.produto.remedio.formulacao.PrincipioAtivoR
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -45,6 +51,9 @@ public class DataLoader implements CommandLineRunner {
 
     @Autowired
     private FormulaRepository formulaRepo;
+
+    @Autowired
+    private LaboratorioRepository laboratorioRepo;
 
     @Override
     public void run(String... args) throws Exception {
@@ -131,7 +140,21 @@ public class DataLoader implements CommandLineRunner {
 
         // --- Composição ---
         if (composicaoRepo.count() == 0) {
-            composicaoRepo.save(new Composicao("dipirona monoidratada"));
+            PrincipioAtivo principioAtivo = principioAtivoRepo.findByNome("dipirona monoidratada");
+            MedidaBasica medidaBasica = medidaBasicaRepo.findBySigla("g");
+            composicaoRepo.save(new Composicao(principioAtivo, 1, medidaBasica));
+        }
+
+        // --- Fórmula ---
+        if (formulaRepo.count() == 0) {
+            List<Composicao> composicoes = new ArrayList<>();
+            composicoes.add(composicaoRepo.findAll().getFirst());
+            formulaRepo.save(new Formula(composicoes));
+        }
+
+        // --- Laboratório ---
+        if (laboratorioRepo.count() == 0) {
+            laboratorioRepo.save(new Laboratorio("Prati-Donaduzzi","Prati Donaduzzi & Cia Ltda"));
         }
 
     }

@@ -21,6 +21,10 @@ public class Formula {
 
     public Formula() {}
 
+    public Formula(List<Composicao> composicoes) {
+        this.composicoes = composicoes;
+    }
+
     public List<Composicao> getComposicoes() {
         return composicoes;
     }
