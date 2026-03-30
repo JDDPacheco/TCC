@@ -100,22 +100,22 @@ public class FormulaController {
         }
     }
 
-    @Operation(summary = "Excluir uma fórmula pelo id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Objeto excluído do banco de dados com sucesso!"),
-            @ApiResponse(responseCode = "404", description = "Objeto não encontrado no banco de dados."),
-            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
-    })
-    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
-        try {
-            if (formulaService.delete(id)) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @Operation(summary = "Excluir uma fórmula pelo id")
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "204", description = "Objeto excluído do banco de dados com sucesso!"),
+//            @ApiResponse(responseCode = "404", description = "Objeto não encontrado no banco de dados."),
+//            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+//    })
+//    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<HttpStatus> delete(@PathVariable Long id) {
+//        try {
+//            if (formulaService.delete(id)) {
+//                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//            } else {
+//                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//            }
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 }

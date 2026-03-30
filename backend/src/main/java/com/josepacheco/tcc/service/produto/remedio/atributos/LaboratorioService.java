@@ -46,13 +46,13 @@ public class LaboratorioService {
         return new LaboratorioDTO(laboratorioRepository.save(laboratorioEncontrado));
     }
 
-    public boolean delete(Long id){
-        Laboratorio laboratorio = laboratorioRepository.getReferenceById(id);
-        if(laboratorioRepository.existsById(id)){
-            laboratorioRepository.delete(laboratorio);
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    public boolean delete(Long id){
+//        Laboratorio laboratorio = laboratorioRepository.getReferenceById(id);
+//        if(laboratorioRepository.existsById(id)){
+//            laboratorioRepository.delete(laboratorio);
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 }

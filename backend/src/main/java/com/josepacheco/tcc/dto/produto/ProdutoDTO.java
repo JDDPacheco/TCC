@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.EXISTING_PROPERTY,
-        property = "tipoProduto", // O campo no seu JSON
+        property = "tipoProduto",
         visible = true
 )
 @JsonSubTypes({

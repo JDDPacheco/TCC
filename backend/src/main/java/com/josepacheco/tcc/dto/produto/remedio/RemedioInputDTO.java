@@ -2,6 +2,7 @@ package com.josepacheco.tcc.dto.produto.remedio;
 
 import com.josepacheco.tcc.dto.produto.ProdutoDTO;
 import com.josepacheco.tcc.model.produto.MedidaPadrao;
+import com.josepacheco.tcc.model.produto.remedio.Generico;
 import com.josepacheco.tcc.model.produto.remedio.Remedio;
 import com.josepacheco.tcc.model.produto.remedio.atributos.Apresentacao;
 import com.josepacheco.tcc.model.produto.remedio.atributos.ControleReceita;
@@ -70,13 +71,19 @@ public class RemedioInputDTO extends ProdutoDTO {
         ControleReceita controleReceita = controleReceitaRepository.findByTipoControle(this.tipoControle);
         MedidaFarmaceutica medidaFarmaceutica = medidaFarmaceuticaRepository.findBySigla(this.siglaMedidaDoses);
 
-        // Criando objeto de Remedio
-        Remedio remedio = new Remedio();
+        // Criando o objeto baseado no tipo de DTO que chamou o metodo
+        Remedio remedio;
+        if (this instanceof GenericoInputDTO) {
+            remedio = new Generico();
+        } else {
+            remedio = new Remedio();
+        }
 
         // Inserindo dados obrigatórios
         remedio.setEan(this.getEan());
         remedio.setNomeComercial(this.getNomeComercial());
         remedio.setUnidadeDeMedida(medidaPadraoProduto);
+        remedio.setQuantidadeDoses(this.getQuantidadeDoses());
         remedio.setFormula(formula);
         remedio.setLaboratorio(laboratorio);
         remedio.setApresentacao(apresentacao);
@@ -86,49 +93,18 @@ public class RemedioInputDTO extends ProdutoDTO {
         // Inserindo dados opcionais
         // Verificando se os dados do peso líquido foram fornecidos antes de atribuir.
         if (this.pesoLiquido != 0) {
-            remedio.setPesoLiquido(this.pesoLiquido);
+            remedio.setPesoLiquido(this.getPesoLiquido());
             MedidaBasica medida = medidaBasicaRepository.findBySigla("g");
             remedio.setMedidaPeso(medida);
         }
 
+        // Verificando se os dados do conteúdo foram fornecidos antes de atribuir.
+        if (this.conteudo != 0) {
+            remedio.setConteudo(this.getConteudo());
+        }
+
         return remedio;
     }
-
-//    public Remedio build(FormulaRepository formulaRepository, LaboratorioRepository laboratorioRepository,
-//                         MedidaBasicaRepository medidaBasicaRepository, ApresentacaoRepository apresentacaoRepository,
-//                         MedidaPadraoRepository medidaPadraoRepository, ControleReceitaRepository controleReceitaRepository){
-//
-//        // Resolvendo dependências obrigatórias
-//        MedidaPadrao medidaPadraoProduto = medidaPadraoRepository.findBySigla(this.getUnidadeDeMedida()); // superclasse
-//        Formula formula = formulaRepository.getReferenceById(this.idFormula);
-//        Laboratorio laboratorio = laboratorioRepository.getReferenceById(this.idLaboratorio);
-//        Apresentacao apresentacao = apresentacaoRepository.findBySigla(this.siglaApresentacao);
-//        ControleReceita controleReceita = controleReceitaRepository.findByTipo(this.tipoControle);
-//        MedidaBasica medidaBasica = medidaBasicaRepository.findBySigla(this.siglaMedidaConteudo);
-//
-//        // Criando objeto de Remedio
-//        Remedio remedio = new Remedio();
-//
-//        // Inserindo dados obrigatórios
-//        remedio.setEan(this.getEan());
-//        remedio.setNomeComercial(this.getNomeComercial());
-//        remedio.setUnidadeDeMedida(medidaPadraoProduto);
-//        remedio.setFormula(formula);
-//        remedio.setLaboratorio(laboratorio);
-//        remedio.setApresentacao(apresentacao);
-//        remedio.setControle(controleReceita);
-//        remedio.setMedidaConteudo(medidaBasica);
-//
-//        // Inserindo dados opcionais
-//        // Verificando se os dados do peso líquido foram fornecidos antes de atribuir.
-//        if (this.pesoLiquido != 0) {
-//            remedio.setPesoLiquido(this.pesoLiquido);
-//            MedidaBasica medida = medidaBasicaRepository.findBySigla("g");
-//            remedio.setMedidaPeso(medida);
-//        }
-//
-//        return remedio;
-//    }
 
     public Long getIdFormula() {
         return idFormula;

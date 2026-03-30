@@ -1,0 +1,75 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* O container principal ocupa a tela toda */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Navbar Superior */
+.top-navbar {
+  background-color: #2c3e50;
+  color: white;
+  padding: 0 20px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.top-navbar a {
+  color: #ecf0f1;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.top-navbar a:hover {
+  background-color: #34495e;
+}
+
+/* Corpo da página (Abaixo da Navbar) */
+.main-body {
+  display: flex;
+  flex: 1; /* Ocupa o resto da altura da tela */
+  overflow: hidden; /* Evita que a página toda role se o menu for muito grande */
+}
+
+/* Sidebar Esquerda */
+.sidebar {
+  width: 250px;
+  background-color: #f4f4f4;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #333;
+  padding: 8px 10px;
+  border-radius: 4px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+.sidebar a:hover {
+  background-color: #e9ecef;
+}
+
+/* Área principal de conteúdo */
+.content-area {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto; /* Permite rolagem apenas no conteúdo */
+  background-color: #fafafa;
+}

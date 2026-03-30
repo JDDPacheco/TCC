@@ -40,6 +40,7 @@ public class MedidaFarmaceuticaController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
 //
 //    @Operation(summary = "Obter detalhes de uma unidade de medica farmacêutica pelo id")
 //    @ApiResponses(value = {
@@ -60,7 +61,7 @@ public class MedidaFarmaceuticaController {
 //            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
-
+//
 //    @Operation(summary = "Criar uma nova unidade de medida farmacêutica.")
 //    @ApiResponses(value = {
 //            @ApiResponse(responseCode = "201", description = "Objeto criado no banco de dados com sucesso!"),
@@ -115,4 +116,5 @@ public class MedidaFarmaceuticaController {
 //            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 //        }
 //    }
+
 }

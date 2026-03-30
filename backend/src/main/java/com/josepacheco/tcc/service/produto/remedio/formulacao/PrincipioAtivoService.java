@@ -38,13 +38,13 @@ public class PrincipioAtivoService {
         return new PrincipioAtivoDTO(principioAtivoRepository.save(principioAtivo));
     }
 
-    public boolean delete(Long id){
-        PrincipioAtivo principioAtivo = principioAtivoRepository.getReferenceById(id);
-        if(principioAtivoRepository.existsById(id)){
-            principioAtivoRepository.delete(principioAtivo);
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    public boolean delete(Long id){
+//        PrincipioAtivo principioAtivo = principioAtivoRepository.getReferenceById(id);
+//        if(principioAtivoRepository.existsById(id)){
+//            principioAtivoRepository.delete(principioAtivo);
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 }

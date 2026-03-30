@@ -49,13 +49,13 @@ public class FormulaService {
         return new FormulaOutputDTO(formulaRepository.save(formulaEncontrada));
     }
 
-    public boolean delete(Long id){
-        Formula formula = formulaRepository.getReferenceById(id);
-        if(formulaRepository.existsById(id)){ // a formula existe, ela é excluída
-            formulaRepository.delete(formula);
-            return true;
-        } else {                  // a formula não existia, erro 404 NOT.FOUND
-            return false;
-        }
-    }
+//    public boolean delete(Long id){
+//        Formula formula = formulaRepository.getReferenceById(id);
+//        if(formulaRepository.existsById(id)){ // a formula existe, ela é excluída
+//            formulaRepository.delete(formula);
+//            return true;
+//        } else {                  // a formula não existia, erro 404 NOT.FOUND
+//            return false;
+//        }
+//    }
 }

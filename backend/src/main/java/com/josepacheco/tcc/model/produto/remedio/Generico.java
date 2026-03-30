@@ -16,6 +16,10 @@ public class Generico extends Remedio{
         super(nomeComercial, ean, unidadeDeMedida, formula, laboratorio, quantidadeDoses, medidaDoses, conteudo, medidaConteudo, pesoLiquido, medidaPeso, apresentacao, controle);
         setNomeComercial(this.getFormula().toString());
     }
+
+    public Generico() {
+    }
+
     // classe apenas de anotação, sem atributos específicos
     // vou criar uma regra para que o nome do produto seja a formula quando o remédio for generico
 }

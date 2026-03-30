@@ -57,13 +57,13 @@ public class ComposicaoService {
         return new ComposicaoDTO(composicaoRepository.save(composicaoEncontrada));
     }
 
-    public boolean delete(Long id){
-        Composicao composicao = composicaoRepository.getReferenceById(id);
-        if(composicaoRepository.existsById(id)){ // a composicao existe, ela é excluída
-            composicaoRepository.delete(composicao);
-            return true;
-        } else {                  // a composicao não existia, erro 404 NOT.FOUND
-            return false;
-        }
-    }
+//    public boolean delete(Long id){
+//        Composicao composicao = composicaoRepository.getReferenceById(id);
+//        if(composicaoRepository.existsById(id)){ // a composicao existe, ela é excluída
+//            composicaoRepository.delete(composicao);
+//            return true;
+//        } else {                  // a composicao não existia, erro 404 NOT.FOUND
+//            return false;
+//        }
+//    }
 }

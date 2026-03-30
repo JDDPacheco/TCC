@@ -59,4 +59,24 @@ public class ProdutoController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
+    @Operation(summary = "Atualizar um produto existente pelo ean.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Objeto atualizado no banco de dados com sucesso!"),
+            @ApiResponse(responseCode = "404", description = "Objeto não encontrado no banco de dados."),
+            @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
+    })
+    @PutMapping(value = "/{ean}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProdutoDTO> update(@PathVariable String ean, @Valid @RequestBody ProdutoDTO produtoDTO) {
+        try {
+            ProdutoDTO produtoUpdated = produtoService.update(ean, produtoDTO);
+            if (produtoUpdated != null) {
+                return new ResponseEntity<>(produtoUpdated, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
