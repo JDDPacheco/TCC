@@ -9,6 +9,7 @@ import PrincipiosAtivos from './pages/PrincipiosAtivos';
 import Composicoes from './pages/Composicoes';
 import Formulas from './pages/Formulas';
 import CadastroProduto from './pages/CadastroProduto';
+import ConsultaProdutos from './pages/ConsultaProdutos';
 
 // ==========================================
 // 1. LAYOUT PRINCIPAL (O esqueleto da tela)
@@ -56,7 +57,8 @@ function ProdutoLayout() {
         <Link to="/produtos/composicoes">Composições</Link>
         <Link to="/produtos/formulas">Fórmulas</Link>
         <hr />
-        <Link to="/produtos/cadastro">Cadastro de Produtos</Link>
+        <Link to="/produtos/cadastro-produtos">Cadastro de Produtos</Link>
+        <Link to="/produtos/consulta-produtos">Consulta de Produtos</Link>
       </aside>
 
       {/* A área onde os formulários vão aparecer */}
@@ -104,7 +106,8 @@ function App() {
             <Route path="principios-ativos" element={<PrincipiosAtivos/>} />
             <Route path="composicoes" element={<Composicoes/>} />
             <Route path="formulas" element={<Formulas/>} />
-            <Route path="cadastro" element={<CadastroProduto/>} />
+            <Route path="cadastro-produtos" element={<CadastroProduto/>} />
+            <Route path="consulta-produtos" element={<ConsultaProdutos />} />
           </Route>
 
           {/* Outros Módulos (Ainda sem submenu) */}
