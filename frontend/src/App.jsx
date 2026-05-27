@@ -8,6 +8,7 @@ import Laboratorios from './pages/Laboratorios';
 import PrincipiosAtivos from './pages/PrincipiosAtivos';
 import Composicoes from './pages/Composicoes';
 import Formulas from './pages/Formulas';
+import CadastroProduto from './pages/CadastroProduto';
 
 // ==========================================
 // 1. LAYOUT PRINCIPAL (O esqueleto da tela)
@@ -103,7 +104,7 @@ function App() {
             <Route path="principios-ativos" element={<PrincipiosAtivos/>} />
             <Route path="composicoes" element={<Composicoes/>} />
             <Route path="formulas" element={<Formulas/>} />
-            <Route path="cadastro" element={<h2>Tela de Cadastro de Produto Final</h2>} />
+            <Route path="cadastro" element={<CadastroProduto/>} />
           </Route>
 
           {/* Outros Módulos (Ainda sem submenu) */}

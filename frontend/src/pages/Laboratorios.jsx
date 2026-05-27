@@ -3,68 +3,69 @@ import api from '../services/api';
 import { toast } from 'react-toastify';
 
 export default function Laboratorios() {
+  const [laboratorios, setLaboratorios] = useState([]);
+  
+  // Confirme se o nome do campo é 'marca' ou 'nome' no seu backend
+  const [novoLaboratorio, setNovoLaboratorio] = useState({ marca: '' });
+  const [idEditando, setIdEditando] = useState(null);
 
-  //** Definição dos estados da Tela. */ 
-  const [laboratorios, setLaboratorios] = useState([]); // inicia Laboratórios como uma lista vazia
-  const [novoLab, setNovoLab] = useState({ marca: '', nomeFantasia: '' }); // inicia o JSON do novo laboratório com campos inicialmente vazios
-  const [idEditando, setIdEditando] = useState(null); // inicia o estado de edição vazio, ou seja, inicialmente não está ocorrendo edição
+  // ESTADO DO FILTRO
+  const [filtroPesquisa, setFiltroPesquisa] = useState('');
 
-  //** Definição das funções da Tela */
-
-  // Função para preencher a lista de Laboratórios
-  // Faz a solicitação GET para a API e recebe a resposta
   const carregarLaboratorios = () => {
     api.get('/api/produto/remedio/laboratorio')
       .then((response) => setLaboratorios(response.data))
       .catch((error) => console.error("Erro ao buscar laboratórios:", error));
   };
 
-  useEffect(() => { // usamos o useEffect para definir como usar as funções, a função carregarLaboratorios vai ser feita apenas uma vez quando a tela iniciar devido ao[]
+  useEffect(() => {
     carregarLaboratorios();
   }, []);
 
-  // Função para preenchimento do formulário
-  // Lida com os campos do formulário
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setNovoLab({ ...novoLab, [name]: value });
+    setNovoLaboratorio({ ...novoLaboratorio, [name]: value });
   };
 
-  // Funções para edição de registros
-  // Prepara o formulário para edição
-  const prepararEdicao = (lab) => {
-    setNovoLab({ marca: lab.marca, nomeFantasia: lab.nomeFantasia }); // prepara o JSON com os dados do laboratório selecionado para edição
-    setIdEditando(lab.id); // coloca o valor do ID do Laboratorio no estado idEditando, travando o estado em edição
+  // BARREIRA DE SEGURANÇA
+  const prepararEdicao = (laboratorio) => {
+    const confirmacao = window.confirm(
+      "⚠️ ATENÇÃO! AVISO DE SEGURANÇA ⚠️\n\n" +
+      "Esta opção deve ser usada EXCLUSIVAMENTE para corrigir pequenos erros de digitação (ex: letras trocadas, acentos).\n\n" +
+      "NUNCA mude completamente a marca para outro Laboratório, pois isso afetará o registro de TODOS os medicamentos vinculados a ele no banco de dados.\n\n" +
+      "Você tem certeza que deseja apenas corrigir a ortografia deste registro?"
+    );
+
+    if (confirmacao) {
+      setNovoLaboratorio({ marca: laboratorio.marca }); 
+      setIdEditando(laboratorio.id);
+    }
   };
 
-  // Cancela a edição e limpa tudo
   const cancelarEdicao = () => {
-    setNovoLab({ marca: '', nomeFantasia: '' }); // deixa vazios os valores do JSON do novo laboratório
-    setIdEditando(null); // torna nulo, desttiva, o estado de edição
+    setNovoLaboratorio({ marca: '' });
+    setIdEditando(null);
   };
 
-  // Salva o novo laboratório (POST) ou edita um já existente quando em edição (PUT)
   const salvarLaboratorio = (event) => {
-    event.preventDefault(); // evita que o navegador recarregue a página ao clicar no submit do HTML
+    event.preventDefault();
 
     if (idEditando) {
-      // MODO EDIÇÃO: Faz o PUT (passando o ID na URL)
-      api.put(`/api/produto/remedio/laboratorio/${idEditando}`, novoLab)
+      api.put(`/api/produto/remedio/laboratorio/${idEditando}`, novoLaboratorio)
         .then(() => {
-          toast.success("Laboratório atualizado com sucesso!");
-          cancelarEdicao(); // Limpa e sai do modo edição
-          carregarLaboratorios(); // Recarrega a lista com os dados novos
+          toast.success("Ortografia corrigida com sucesso!");
+          cancelarEdicao();
+          carregarLaboratorios();
         })
         .catch((error) => {
           console.error("Erro ao atualizar:", error);
           toast.error("Erro ao atualizar o laboratório.");
         });
     } else {
-      // MODO CRIAÇÃO: Faz o POST
-      api.post('/api/produto/remedio/laboratorio', novoLab)
+      api.post('/api/produto/remedio/laboratorio', novoLaboratorio)
         .then(() => {
           toast.success("Laboratório cadastrado com sucesso!");
-          cancelarEdicao(); // Usamos aqui só para limpar os campos
+          setNovoLaboratorio({ marca: '' });
           carregarLaboratorios();
         })
         .catch((error) => {
@@ -74,35 +75,40 @@ export default function Laboratorios() {
     }
   };
 
+  // LÓGICA DO FILTRO EM TEMPO REAL
+  const laboratoriosFiltrados = laboratorios.filter((lab) =>
+    lab.marca.toLowerCase().includes(filtroPesquisa.toLowerCase())
+  );
+
   return (
     <div>
       <h2>Gestão de Laboratórios</h2>
-      
-      {/* Formulário Dinâmico (Muda a cor da borda se estiver editando) */}
-      <div style={{ border: idEditando ? '2px solid #ffc107' : '1px solid #ccc', padding: '15px', marginTop: '20px', borderRadius: '5px', maxWidth: '500px', backgroundColor: '#fff' }}>
-        
-        <h3 style={{ marginTop: 0, color: idEditando ? '#d39e00' : '#333' }}>
-          {idEditando ? `Editando Laboratório (ID: ${idEditando})` : 'Cadastrar Novo Laboratório'}
-        </h3>
+      <p>Gerencie as marcas e fabricantes dos medicamentos.</p>
+
+      {/* Formulário */}
+      <div style={{ border: idEditando ? '2px solid #ffc107' : '1px solid #ccc', padding: '20px', marginTop: '20px', borderRadius: '5px', maxWidth: '500px', backgroundColor: '#fff' }}>
+        <h4 style={{ margin: '0 0 15px 0', color: idEditando ? '#d39e00' : '#333' }}>
+          {idEditando ? `Corrigindo Ortografia` : 'Cadastrar Novo Laboratório'}
+        </h4>
 
         <form onSubmit={salvarLaboratorio} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <input 
-            type="text" name="marca" placeholder="Marca (ex: Geolab)" 
-            value={novoLab.marca} onChange={handleInputChange} required style={{ padding: '8px' }}
-          />
-          <input 
-            type="text" name="nomeFantasia" placeholder="Nome Fantasia" 
-            value={novoLab.nomeFantasia} onChange={handleInputChange} required style={{ padding: '8px' }}
+            type="text" 
+            name="marca" 
+            placeholder="Nome da Marca (ex: Medley)" 
+            value={novoLaboratorio.marca} 
+            onChange={handleInputChange} 
+            required 
+            style={{ padding: '8px' }}
           />
           
           <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-            <button type="submit" style={{ flex: 1, padding: '8px', cursor: 'pointer', backgroundColor: idEditando ? '#ffc107' : '#28a745', color: idEditando ? '#000' : 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
-              {idEditando ? 'Atualizar Laboratório' : 'Salvar Laboratório'}
+            <button type="submit" style={{ flex: 1, padding: '10px', cursor: 'pointer', backgroundColor: idEditando ? '#ffc107' : '#28a745', color: idEditando ? '#000' : 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
+              {idEditando ? 'Salvar Correção' : 'Salvar Laboratório'}
             </button>
 
-            {/* O botão cancelar só aparece no modo de edição */}
             {idEditando && (
-              <button type="button" onClick={cancelarEdicao} style={{ padding: '8px 15px', cursor: 'pointer', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px' }}>
+              <button type="button" onClick={cancelarEdicao} style={{ padding: '10px 15px', cursor: 'pointer', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
                 Cancelar
               </button>
             )}
@@ -110,20 +116,38 @@ export default function Laboratorios() {
         </form>
       </div>
 
-      <h3 style={{ marginTop: '30px' }}>Laboratórios Cadastrados</h3>
-      {laboratorios.length === 0 ? (
-        <p>Nenhum laboratório cadastrado...</p>
+      <h3 style={{ marginTop: '30px' }}>Laboratórios Registrados</h3>
+      
+      {/* BARRA DE PESQUISA DINÂMICA */}
+      <div style={{ marginBottom: '15px', maxWidth: '500px' }}>
+        <input 
+          type="text"
+          placeholder="🔍 Digite para filtrar a lista abaixo..."
+          value={filtroPesquisa}
+          onChange={(e) => setFiltroPesquisa(e.target.value)}
+          style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #ccc', boxSizing: 'border-box', fontSize: '0.95em' }}
+        />
+      </div>
+
+      {/* RENDERIZAÇÃO DA LISTA FILTRADA */}
+      {laboratoriosFiltrados.length === 0 ? (
+        <p style={{ color: '#777', fontStyle: 'italic' }}>Nenhum laboratório correspondente...</p>
       ) : (
-        <ul style={{ marginTop: '10px', listStyleType: 'none', padding: 0 }}>
-          {laboratorios.map((lab) => (
-            <li key={lab.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', borderBottom: '1px solid #eee', backgroundColor: '#fff', marginBottom: '5px', borderRadius: '4px' }}>
-              <span>
-                <strong>ID:</strong> {lab.id} | <strong>Marca:</strong> {lab.marca} | <strong>Nome Fantasia:</strong> {lab.nomeFantasia}
+        <ul style={{ marginTop: '10px', listStyleType: 'none', padding: 0, maxWidth: '500px' }}>
+          {laboratoriosFiltrados.map((lab) => (
+            <li key={lab.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', borderBottom: '1px solid #eee', backgroundColor: '#fff', marginBottom: '5px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              
+              {/* O ID FOI OCULTADO DA INTERFACE */}
+              <span style={{ fontWeight: '500', color: '#333' }}>
+                {lab.marca}
               </span>
               
-              {/* BOTÃO EDITAR NA LISTA */}
-              <button onClick={() => prepararEdicao(lab)} style={{ padding: '5px 10px', cursor: 'pointer', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', fontSize: '0.85em' }}>
-                ✏️ Editar
+              <button 
+                type="button"
+                onClick={() => prepararEdicao(lab)} 
+                style={{ padding: '5px 10px', cursor: 'pointer', backgroundColor: '#ffc107', color: '#000', border: 'none', borderRadius: '4px', fontSize: '0.85em', fontWeight: 'bold' }}
+              >
+                ✏️ Corrigir
               </button>
             </li>
           ))}
