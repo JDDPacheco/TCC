@@ -6,7 +6,10 @@ export default function Laboratorios() {
   const [laboratorios, setLaboratorios] = useState([]);
   
   // Confirme se o nome do campo é 'marca' ou 'nome' no seu backend
-  const [novoLaboratorio, setNovoLaboratorio] = useState({ marca: '' });
+  const [novoLaboratorio, setNovoLaboratorio] = useState({
+    marca: '',
+    nomeFantasia: ''
+  });
   const [idEditando, setIdEditando] = useState(null);
 
   // ESTADO DO FILTRO
@@ -37,7 +40,10 @@ export default function Laboratorios() {
     );
 
     if (confirmacao) {
-      setNovoLaboratorio({ marca: laboratorio.marca }); 
+      setNovoLaboratorio({
+        marca: laboratorio.marca,
+        nomeFantasia: laboratorio.nomeFantasia
+      });
       setIdEditando(laboratorio.id);
     }
   };
@@ -92,13 +98,31 @@ export default function Laboratorios() {
         </h4>
 
         <form onSubmit={salvarLaboratorio} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <input 
-            type="text" 
-            name="marca" 
-            placeholder="Nome da Marca (ex: Medley)" 
-            value={novoLaboratorio.marca} 
-            onChange={handleInputChange} 
-            required 
+          <label>
+  Nome oficial do laboratório
+          </label>
+
+          <input
+            type="text"
+            name="nomeFantasia"
+            placeholder="Ex: EUROFARMA LABORATÓRIOS S.A."
+            value={novoLaboratorio.nomeFantasia}
+            onChange={handleInputChange}
+            required
+            style={{ padding: '8px' }}
+          />
+
+          <label>
+            Marca
+          </label>
+
+          <input
+            type="text"
+            name="marca"
+            placeholder="Ex: Eurofarma"
+            value={novoLaboratorio.marca}
+            onChange={handleInputChange}
+            required
             style={{ padding: '8px' }}
           />
           
@@ -138,9 +162,15 @@ export default function Laboratorios() {
             <li key={lab.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', borderBottom: '1px solid #eee', backgroundColor: '#fff', marginBottom: '5px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
               
               {/* O ID FOI OCULTADO DA INTERFACE */}
-              <span style={{ fontWeight: '500', color: '#333' }}>
-                {lab.marca}
-              </span>
+              <div>
+                <div style={{ fontWeight: '600', color: '#333' }}>
+                  {lab.marca}
+                </div>
+
+                <div style={{ fontSize: '0.85em', color: '#777', marginTop: '3px' }}>
+                  {lab.nomeFantasia}
+                </div>
+              </div>
               
               <button 
                 type="button"
