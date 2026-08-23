@@ -84,8 +84,8 @@ export default function ConsultaProdutos() {
   const prepararEdicao = (produtoParaEditar) => {
     const confirmacao = window.confirm(
       "⚠️ ATENÇÃO! AVISO DE SEGURANÇA ⚠️\n\n" +
-      "Esta opção deve ser usada EXCLUSIVAMENTE para corrigir pequenos erros de digitação (ex: letras trocadas, EAN incorreto, ajuste na unidade de medida).\n\n" +
-      "NUNCA mude completamente os dados para outro Produto (ex: alterar de Dipirona para Paracetamol), pois isso corromperá o histórico de vendas de toda a drogaria.\n\n" +
+      "Esta opção deve ser usada EXCLUSIVAMENTE para corrigir pequenos erros de digitação (ex: letras trocadas no nome, ajuste na unidade de medida).\n\n" +
+      "NUNCA mude completamente os dados para outro Produto (ex: alterar de Dipirona para Paracetamol, ou modificar o código de barras do produto), pois isso corromperá o histórico de vendas de toda a drogaria.\n\n" +
       "Tem a certeza de que deseja apenas corrigir o registo de " + produtoParaEditar.nomeComercial + "?"
     );
 
@@ -114,6 +114,7 @@ export default function ConsultaProdutos() {
       // 2. Injeta os dados convertidos no estado do formulário de edição
       setProdutoEditando({
         ...produtoParaEditar,
+        ean: produtoParaEditar.ean,
         
         // Se encontrou na lista, usa o ID/Sigla. Se não, deixa em branco ('')
         idLaboratorio: labEncontrado ? labEncontrado.id : '',
@@ -146,13 +147,13 @@ export default function ConsultaProdutos() {
 
     const isRemedio = produtoEditando.tipoProduto === 'remedio' || produtoEditando.tipoProduto === 'generico';
     let payload;
-    let url;
+    const url = `/api/produto/${produtoEditando.ean}`;
 
     // Constrói o pacote de dados exato para a API, mantendo a regra do seu DTO
     if (isRemedio) {
       payload = {
         nomeComercial: produtoEditando.nomeComercial,
-        ean: produtoEditando.ean,
+        //ean: produtoEditando.ean,
         unidadeDeMedida: produtoEditando.unidadeDeMedida,
         tipoProduto: produtoEditando.tipoProduto, // Mantém o original
         idLaboratorio: Number(produtoEditando.idLaboratorio),
@@ -165,8 +166,7 @@ export default function ConsultaProdutos() {
         siglaMedidaConteudo: produtoEditando.siglaMedidaConteudo || null,
         pesoLiquido: produtoEditando.pesoLiquido ? Number(produtoEditando.pesoLiquido) : 0
       };
-      // Assume que o endpoint de edição usa o ID na URL (Padrão REST)
-      url = `/api/produto/${produtoEditando.id}`;
+      
     } else {
       payload = {
         nomeComercial: produtoEditando.nomeComercial,
@@ -174,8 +174,6 @@ export default function ConsultaProdutos() {
         unidadeDeMedida: produtoEditando.unidadeDeMedida,
         tipoProduto: produtoEditando.tipoProduto
       };
-      // Confirme se a rota para editar geral é esta, ou se usa apenas a padrão
-      url = `/api/produto/geral/${produtoEditando.id}`;
     }
 
     api.put(url, payload)
@@ -299,9 +297,19 @@ export default function ConsultaProdutos() {
               {/* DADOS GLOBAIS */}
               <div style={{ display: 'flex', gap: '10px' }}>
                 <div style={{ flex: 2 }}>
-                  <label>EAN:</label>
-                  <input type="text" name="ean" value={produtoEditando.ean || ''} onChange={handleEditChange} required style={{ width: '100%', padding: '8px', marginTop: '5px', boxSizing: 'border-box' }} />
-                </div>
+  <label>EAN:</label>
+  <input type="text" name="ean" value={produtoEditando.ean || ''} readOnly title="O EAN é definido pelo código de barras e não pode ser alterado."
+      style={{
+        width: '100%',
+        padding: '8px',
+        marginTop: '5px',
+        boxSizing: 'border-box',
+        backgroundColor: '#e9ecef',
+        color: '#6c757d',
+        cursor: 'not-allowed'
+      }}
+  />
+</div>
                 <div style={{ flex: 2 }}>
                   <label>Unidade Padrão:</label>
                   <div style={{ marginTop: '5px' }}>
