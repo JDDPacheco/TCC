@@ -10,6 +10,7 @@ import Composicoes from './pages/Composicoes';
 import Formulas from './pages/Formulas';
 import CadastroProduto from './pages/CadastroProduto';
 import ConsultaProdutos from './pages/ConsultaProdutos';
+import Precos from './pages/Precos';
 
 // ==========================================
 // 1. LAYOUT PRINCIPAL (O esqueleto da tela)
@@ -110,8 +111,10 @@ function App() {
             <Route path="consulta-produtos" element={<ConsultaProdutos />} />
           </Route>
 
+          {/* Módulos de Preços */}
+          <Route path="precos" element={<Precos />} />
+
           {/* Outros Módulos (Ainda sem submenu) */}
-          <Route path="precos" element={<TelaVazia titulo="Gestão de Preços" />} />
           <Route path="vendas" element={<TelaVazia titulo="Gestão de Vendas" />} />
           <Route path="estoque" element={<TelaVazia titulo="Gestão de Estoque" />} />
 
