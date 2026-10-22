@@ -29,6 +29,10 @@ export const formatarDataHora = (dataHora) => {
   return new Date(dataHora).toLocaleString('pt-BR');
 };
 
+// Texto em minúsculas e sem acentos, para buscas ("Genérico" e "generico" ficam iguais)
+export const normalizarTexto = (texto) =>
+  (texto || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
 // Mensagem enviada pelo backend (campo "message") ou um texto padrão
 export const mensagemDeErro = (error, textoPadrao) => error.response?.data?.message || textoPadrao;
 

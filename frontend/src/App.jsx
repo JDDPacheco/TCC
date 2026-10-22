@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Páginas do Sistema
+import Inicio from './pages/Inicio';
 import Laboratorios from './pages/Laboratorios';
 import PrincipiosAtivos from './pages/PrincipiosAtivos';
 import Composicoes from './pages/Composicoes';
@@ -38,8 +39,7 @@ function MainLayout() {
       />
       {/* Menu Superior Horizontal */}
       <nav className="top-navbar">
-        <h2>💊 Dr.StoreSys</h2>
-        <Link to="/">Início</Link>
+        <Link to="/" className="marca-sistema" title="Tela inicial">💊 Dr.StoreSys</Link>
         <Link to="/produtos">Gestão de Produto</Link>
         <Link to="/precos">Gestão de Preço</Link>
         <Link to="/vendas">Gestão de Venda</Link>
@@ -123,17 +123,7 @@ function VendaLayout() {
 }
 
 // ==========================================
-// 3. TELAS (Páginas Falsas por enquanto)
-// ==========================================
-const Home = () => (
-  <div className="content-area">
-    <h1>Bem-vindo ao Sistema</h1>
-    <p>Use o menu superior para navegar.</p>
-  </div>
-);
-
-// ==========================================
-// 4. CONFIGURAÇÃO DAS ROTAS (O Roteador)
+// 3. CONFIGURAÇÃO DAS ROTAS (O Roteador)
 // ==========================================
 function App() {
   return (
@@ -142,8 +132,8 @@ function App() {
         {/* Tudo está dentro do MainLayout (Para manter a barra superior fixa) */}
         <Route path="/" element={<MainLayout />}>
           
-          {/* Rota Inicial */}
-          <Route index element={<Home />} />
+          {/* Tela inicial (acessada pelo nome do sistema na barra superior) */}
+          <Route index element={<Inicio />} />
           
           {/* Módulo de Produtos */}
           <Route path="produtos" element={<ProdutoLayout />}>

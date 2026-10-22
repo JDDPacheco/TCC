@@ -70,12 +70,12 @@ npm run build
 - **Mensagens de erro**: `server.error.include-message=always` faz a mensagem das `ResponseStatusException` chegar no campo `message` do corpo. `config/TratadorDeErros.java` converte erros de validação e JSON mal formado em 400 com mensagem legível, no mesmo formato. No frontend, use `mensagemDeErro(error, textoPadrao)` de `src/utils/formatacao.js`. Os controllers antigos (try/catch genérico) também passam a expor a mensagem da exceção original.
 - **Testar a API com acentos pelo terminal**: no Git Bash do Windows, o `curl -d '...'` não envia acentos em UTF-8 e o backend responde "corpo mal formatado". Grave o JSON num arquivo e use `--data-binary @arquivo.json`.
 - **Testes**: `backend/src/test/resources/application.properties` substitui o de produção e usa H2 em memória (modo MySQL, `create-drop`). O `DataLoader` roda nos testes e popula as tabelas de apoio. Os testes de service/controller usam `@SpringBootTest` + `@Transactional`, então cada teste é desfeito ao final. No MockMvc, o corpo JSON de uma `ResponseStatusException` não é gerado (ele vem da página `/error`); confira a mensagem com `status().reason(...)`. O frontend não tem testes.
-  - Há testes de service (`service/<módulo>/*ServiceTest`) e de HTTP (`controller/<módulo>/*ControllerTest`) para os quatro módulos (produto, preço, estoque e venda).
+  - Há testes de service (`service/<módulo>/*ServiceTest`) e de HTTP (`controller/<módulo>/*ControllerTest`) para os quatro módulos (produto, preço, estoque e venda) e para o catálogo.
   - **Bugs conhecidos** ficam registrados como testes com `@Disabled("Bug conhecido: ...")`, que descrevem o comportamento correto (hoje não há nenhum). Ao corrigir um bug, remova o `@Disabled` e deixe o teste como regressão. Para rodar testes desativados: `./mvnw test -Dtest=<Classe> "-DargLine=-Djunit.jupiter.conditions.deactivate=org.junit.*DisabledCondition"`.
 
 ## Arquitetura do backend
 
-Pacote raiz: `com.josepacheco.tcc`. As camadas são `controller → service → repository → model`, com classes `dto` entre controller e service. Todas as camadas repetem os mesmos subpacotes de domínio: `produto`, `produto/remedio/atributos`, `produto/remedio/formulacao`, `preco`, `estoque` e `venda`.
+Pacote raiz: `com.josepacheco.tcc`. As camadas são `controller → service → repository → model`, com classes `dto` entre controller e service. Todas as camadas repetem os mesmos subpacotes de domínio: `produto`, `produto/remedio/atributos`, `produto/remedio/formulacao`, `preco`, `estoque`, `venda` e `catalogo` (este só com service, controller e DTO de leitura).
 
 Os quatro módulos previstos no escopo (produto, preço, estoque e venda) estão implementados.
 
@@ -121,6 +121,11 @@ Os quatro módulos previstos no escopo (produto, preço, estoque e venda) estão
   - `POST /{id}/cancelamento`;
   - `GET /resumo?data=` (fechamento do dia, só com as concluídas; inclui todas as formas de pagamento, mesmo sem vendas).
 - O `VendaController` segue o estilo do `EstoqueController`.
+
+### Catálogo (tela inicial)
+- `GET /api/catalogo` (`CatalogoService`) devolve todos os produtos em ordem de nome, com marca do laboratório, fórmula (composições unidas por " + "), tipo de controle, saldo disponível e preço atual (204 se não há produtos).
+- Os preços atuais vêm de uma única consulta (`PrecoRepository.findPrecosAtuais`) e os saldos de `EstoqueService.listarSaldos()`, para não fazer uma consulta por produto.
+- A busca da tela inicial é feita no frontend.
 - **Rotas** em `/api/estoque`:
   - `GET /` (saldos de todos os produtos) e `GET /{ean}` (saldo e lotes);
   - `PUT /{ean}/estoque_minimo`;
@@ -163,7 +168,12 @@ Rotas começam em `/api/produto/...` e espelham o caminho do pacote. Segmentos c
 
 ## Arquitetura do frontend
 
-- `src/App.jsx` concentra todo o roteamento. `MainLayout` renderiza a barra superior e o `ToastContainer`, e `ProdutoLayout` acrescenta a barra lateral do módulo de produto. As rotas do módulo ficam em `/produtos/*`. A gestão de preços fica em `/precos` (`Precos.jsx`), sem barra lateral. O módulo de estoque tem o próprio layout (`EstoqueLayout`) em `/estoque/*`, com as telas `EntradaEstoque`, `ConsultaEstoque`, `AjustesEstoque`, `AlertasEstoque` e `MovimentacoesEstoque`. O de vendas (`VendaLayout`) fica em `/vendas/*`, com `CaixaVenda` (PDV), `HistoricoVendas` e `ResumoVendas`.
+- `src/App.jsx` concentra todo o roteamento. `MainLayout` renderiza a barra superior e o `ToastContainer`; o nome "💊 Dr.StoreSys" na barra (classe `marca-sistema`) é o link para a tela inicial, e não existe item "Início" no menu.
+- A tela inicial (`Inicio.jsx`, rota `/`) tem:
+  - um atalho para o Caixa (PDV);
+  - a tabela do catálogo (nome comercial, marca, fórmula, estoque e preço atual);
+  - uma busca que ignora maiúsculas e acentos (`normalizarTexto`) e exige que cada palavra digitada apareça no nome, na marca, na fórmula ou no EAN.
+- `ProdutoLayout` acrescenta a barra lateral do módulo de produto. As rotas do módulo ficam em `/produtos/*`. A gestão de preços fica em `/precos` (`Precos.jsx`), sem barra lateral. O módulo de estoque tem o próprio layout (`EstoqueLayout`) em `/estoque/*`, com as telas `EntradaEstoque`, `ConsultaEstoque`, `AjustesEstoque`, `AlertasEstoque` e `MovimentacoesEstoque`. O de vendas (`VendaLayout`) fica em `/vendas/*`, com `CaixaVenda` (PDV), `HistoricoVendas` e `ResumoVendas`.
 - No `CaixaVenda`, o `SeletorProduto` recebe `ean={null}`, então o campo volta a ficar vazio depois de cada leitura e o mesmo produto lido de novo soma 1 à quantidade. Os totais são calculados em centavos (inteiros), para evitar erros de ponto flutuante. Para a data de hoje, use `dataDeHoje()` de `formatacao.js`, nunca `toISOString()`, que usa UTC.
 - Peças compartilhadas (até agora usadas pelo estoque):
   - `src/components/SeletorProduto.jsx`: busca de produto por nome ou EAN com react-select; também funciona com leitor de código de barras;

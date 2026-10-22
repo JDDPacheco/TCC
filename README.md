@@ -13,6 +13,8 @@ O Dr.StoreSys é um protótipo de sistema integrado de gestão para drogarias de
 | Gestão de Estoque | Concluído: entrada de mercadoria por lote (com validade, custo de compra e fornecedor), consulta de saldo por produto e lote, ajustes de inventário, perdas, devoluções, alertas de vencimento e de estoque mínimo, e histórico de movimentações |
 | Gestão de Venda | Concluído: caixa (PDV) com leitura por código de barras, preço atual e baixa automática do estoque pelo lote que vence primeiro, controle de receita (confirmação e registro dos dados para controle especial), desconto, pagamento em dinheiro (com troco), cartão ou PIX, cancelamento com estorno ao estoque, histórico de vendas e resumo do dia |
 
+A **tela inicial** (acessada pelo nome "💊 Dr.StoreSys" na barra superior) mostra todos os produtos com marca, fórmula, estoque e preço atual. Ela tem uma busca por nome, marca, princípio ativo ou EAN, e um atalho para o Caixa (PDV).
+
 ## Tecnologias
 
 - **Backend**: Java 21, Spring Boot 3.4 (Web, Data JPA, Security), MySQL e springdoc-openapi (Swagger)

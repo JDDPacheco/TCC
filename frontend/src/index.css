@@ -35,6 +35,18 @@
   background-color: #34495e;
 }
 
+/* Nome do sistema na barra superior: também é o link para a tela inicial */
+.top-navbar a.marca-sistema {
+  font-size: 1.5em;
+  padding: 0;
+  margin-right: 10px;
+}
+
+.top-navbar a.marca-sistema:hover {
+  background-color: transparent;
+  opacity: 0.85;
+}
+
 /* Corpo da página (Abaixo da Navbar) */
 .main-body {
   display: flex;
