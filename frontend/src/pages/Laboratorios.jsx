@@ -17,7 +17,7 @@ export default function Laboratorios() {
 
   const carregarLaboratorios = () => {
     api.get('/api/produto/remedio/laboratorio')
-      .then((response) => setLaboratorios(response.data))
+      .then((response) => setLaboratorios(response.data || [])) // 204 (lista vazia) vem sem corpo
       .catch((error) => console.error("Erro ao buscar laboratórios:", error));
   };
 
