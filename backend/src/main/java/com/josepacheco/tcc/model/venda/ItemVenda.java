@@ -5,6 +5,10 @@ import com.josepacheco.tcc.model.produto.Produto;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
+/**
+ * Item vendido de um lote específico. Quando a baixa FEFO divide a quantidade entre lotes,
+ * a venda tem um ItemVenda por lote do mesmo produto (com os mesmos dados de receita).
+ */
 @Entity
 public class ItemVenda {
 
@@ -32,7 +36,23 @@ public class ItemVenda {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precoUnitarioCobrado;
 
+    // Tipo de controle do remédio no momento da venda ("sob_prescricao", "especial"); nulo para itens sem receita
+    @Column(length = 30)
+    private String tipoControle;
+
+    // Operador confirmou que a receita foi apresentada (itens sob prescrição ou de controle especial)
+    @Column
+    private Boolean receitaApresentada;
+
+    // Dados da receita retida; apenas para remédios de controle especial
+    @Embedded
+    private DadosReceita receita;
+
     public ItemVenda() {}
+
+    public BigDecimal getSubtotal() {
+        return precoUnitarioCobrado.multiply(BigDecimal.valueOf(quantidade));
+    }
 
     public Long getId() {
         return id;
@@ -76,5 +96,29 @@ public class ItemVenda {
 
     public void setPrecoUnitarioCobrado(BigDecimal precoUnitarioCobrado) {
         this.precoUnitarioCobrado = precoUnitarioCobrado;
+    }
+
+    public String getTipoControle() {
+        return tipoControle;
+    }
+
+    public void setTipoControle(String tipoControle) {
+        this.tipoControle = tipoControle;
+    }
+
+    public Boolean getReceitaApresentada() {
+        return receitaApresentada;
+    }
+
+    public void setReceitaApresentada(Boolean receitaApresentada) {
+        this.receitaApresentada = receitaApresentada;
+    }
+
+    public DadosReceita getReceita() {
+        return receita;
+    }
+
+    public void setReceita(DadosReceita receita) {
+        this.receita = receita;
     }
 }

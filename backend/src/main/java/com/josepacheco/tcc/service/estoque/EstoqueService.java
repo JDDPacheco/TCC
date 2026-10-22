@@ -157,6 +157,15 @@ public class EstoqueService {
         return baixas;
     }
 
+    /**
+     * Devolve ao lote a quantidade de um item de venda cancelada. Chamada pelo módulo de vendas,
+     * dentro da transação do cancelamento.
+     */
+    @Transactional
+    public void estornarBaixa(Lote lote, int quantidade, String observacao) {
+        movimentar(lote, TipoMovimentacao.CANCELAMENTO_VENDA, quantidade, observacao, null, null);
+    }
+
     // ==========================================================
     // CONSULTAS E ALERTAS
     // ==========================================================

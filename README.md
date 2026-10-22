@@ -11,7 +11,7 @@ O Dr.StoreSys é um protótipo de sistema integrado de gestão para drogarias de
 | Gestão de Produto | Concluído: laboratórios, princípios ativos, composições, fórmulas, cadastro e consulta de produtos (geral, remédio e genérico) |
 | Gestão de Preço | Concluído: registro do preço de venda por produto, consulta do preço atual e histórico de preços |
 | Gestão de Estoque | Concluído: entrada de mercadoria por lote (com validade, custo de compra e fornecedor), consulta de saldo por produto e lote, ajustes de inventário, perdas, devoluções, alertas de vencimento e de estoque mínimo, e histórico de movimentações |
-| Gestão de Venda | Em construção |
+| Gestão de Venda | Concluído: caixa (PDV) com leitura por código de barras, preço atual e baixa automática do estoque pelo lote que vence primeiro, controle de receita (confirmação e registro dos dados para controle especial), desconto, pagamento em dinheiro (com troco), cartão ou PIX, cancelamento com estorno ao estoque, histórico de vendas e resumo do dia |
 
 ## Tecnologias
 

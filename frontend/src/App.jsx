@@ -1,6 +1,6 @@
 // Bibliotecas do REACT
 import { BrowserRouter, Routes, Route, Link, Outlet } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify'; 
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // Páginas do Sistema
@@ -16,6 +16,9 @@ import ConsultaEstoque from './pages/ConsultaEstoque';
 import AjustesEstoque from './pages/AjustesEstoque';
 import AlertasEstoque from './pages/AlertasEstoque';
 import MovimentacoesEstoque from './pages/MovimentacoesEstoque';
+import CaixaVenda from './pages/CaixaVenda';
+import HistoricoVendas from './pages/HistoricoVendas';
+import ResumoVendas from './pages/ResumoVendas';
 
 // ==========================================
 // 1. LAYOUT PRINCIPAL (O esqueleto da tela)
@@ -99,19 +102,33 @@ function EstoqueLayout() {
 }
 
 // ==========================================
+// 2.2 LAYOUT DO MÓDULO DE VENDAS (Com Sidebar)
+// ==========================================
+function VendaLayout() {
+  return (
+    <div className="main-body">
+      <aside className="sidebar">
+        <h3>Submenus</h3>
+        <Link to="/vendas/caixa">Caixa (PDV)</Link>
+        <hr />
+        <Link to="/vendas/historico">Histórico de Vendas</Link>
+        <Link to="/vendas/resumo">Resumo do Dia</Link>
+      </aside>
+
+      <main className="content-area">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+// ==========================================
 // 3. TELAS (Páginas Falsas por enquanto)
 // ==========================================
 const Home = () => (
   <div className="content-area">
     <h1>Bem-vindo ao Sistema</h1>
     <p>Use o menu superior para navegar.</p>
-  </div>
-);
-
-const TelaVazia = ({ titulo }) => (
-  <div className="content-area">
-    <h1>{titulo}</h1>
-    <p>Módulo em construção...</p>
   </div>
 );
 
@@ -152,8 +169,13 @@ function App() {
             <Route path="movimentacoes" element={<MovimentacoesEstoque />} />
           </Route>
 
-          {/* Outros Módulos (Ainda sem submenu) */}
-          <Route path="vendas" element={<TelaVazia titulo="Gestão de Vendas" />} />
+          {/* Módulo de Vendas */}
+          <Route path="vendas" element={<VendaLayout />}>
+            <Route index element={<h2>Selecione uma opção no menu lateral</h2>} />
+            <Route path="caixa" element={<CaixaVenda />} />
+            <Route path="historico" element={<HistoricoVendas />} />
+            <Route path="resumo" element={<ResumoVendas />} />
+          </Route>
 
         </Route>
       </Routes>

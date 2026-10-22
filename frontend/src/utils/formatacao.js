@@ -13,6 +13,17 @@ export const formatarData = (data) => {
   return `${dia}/${mes}/${ano}`;
 };
 
+// Data de hoje no formato aaaa-mm-dd, no fuso local
+// (toISOString() usaria UTC e, à noite em Manaus, já devolveria o dia seguinte)
+export const dataDeHoje = () => {
+  const agora = new Date();
+  const doisDigitos = (numero) => String(numero).padStart(2, '0');
+  return `${agora.getFullYear()}-${doisDigitos(agora.getMonth() + 1)}-${doisDigitos(agora.getDate())}`;
+};
+
+// Converte texto digitado ("12,90", "12.90") em número; vazio ou inválido vira NaN
+export const textoParaNumero = (texto) => (String(texto).trim() === '' ? NaN : Number(String(texto).replace(',', '.')));
+
 export const formatarDataHora = (dataHora) => {
   if (!dataHora) return '—';
   return new Date(dataHora).toLocaleString('pt-BR');
@@ -26,7 +37,20 @@ export const TIPOS_MOVIMENTACAO = {
   SAIDA_VENDA: 'Saída (venda)',
   AJUSTE_INVENTARIO: 'Ajuste de inventário',
   PERDA: 'Perda',
-  DEVOLUCAO: 'Devolução'
+  DEVOLUCAO: 'Devolução',
+  CANCELAMENTO_VENDA: 'Cancelamento de venda'
+};
+
+export const FORMAS_PAGAMENTO = {
+  DINHEIRO: 'Dinheiro',
+  CARTAO_DEBITO: 'Cartão de débito',
+  CARTAO_CREDITO: 'Cartão de crédito',
+  PIX: 'PIX'
+};
+
+export const CONTROLES_RECEITA = {
+  sob_prescricao: 'Venda sob prescrição',
+  especial: 'Controle especial'
 };
 
 export const SITUACOES_LOTE = {

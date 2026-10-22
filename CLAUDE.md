@@ -70,21 +70,21 @@ npm run build
 - **Mensagens de erro**: `server.error.include-message=always` faz a mensagem das `ResponseStatusException` chegar no campo `message` do corpo. `config/TratadorDeErros.java` converte erros de validação e JSON mal formado em 400 com mensagem legível, no mesmo formato. No frontend, use `mensagemDeErro(error, textoPadrao)` de `src/utils/formatacao.js`. Os controllers antigos (try/catch genérico) também passam a expor a mensagem da exceção original.
 - **Testar a API com acentos pelo terminal**: no Git Bash do Windows, o `curl -d '...'` não envia acentos em UTF-8 e o backend responde "corpo mal formatado". Grave o JSON num arquivo e use `--data-binary @arquivo.json`.
 - **Testes**: `backend/src/test/resources/application.properties` substitui o de produção e usa H2 em memória (modo MySQL, `create-drop`). O `DataLoader` roda nos testes e popula as tabelas de apoio. Os testes de service/controller usam `@SpringBootTest` + `@Transactional`, então cada teste é desfeito ao final. No MockMvc, o corpo JSON de uma `ResponseStatusException` não é gerado (ele vem da página `/error`); confira a mensagem com `status().reason(...)`. O frontend não tem testes.
-  - Há testes de service (`service/<módulo>/*ServiceTest`) e de HTTP (`controller/<módulo>/*ControllerTest`) para produto, preço e estoque.
+  - Há testes de service (`service/<módulo>/*ServiceTest`) e de HTTP (`controller/<módulo>/*ControllerTest`) para os quatro módulos (produto, preço, estoque e venda).
   - **Bugs conhecidos** ficam registrados como testes com `@Disabled("Bug conhecido: ...")`, que descrevem o comportamento correto (hoje não há nenhum). Ao corrigir um bug, remova o `@Disabled` e deixe o teste como regressão. Para rodar testes desativados: `./mvnw test -Dtest=<Classe> "-DargLine=-Djunit.jupiter.conditions.deactivate=org.junit.*DisabledCondition"`.
 
 ## Arquitetura do backend
 
-Pacote raiz: `com.josepacheco.tcc`. As camadas são `controller → service → repository → model`, com classes `dto` entre controller e service. Todas as camadas repetem os mesmos subpacotes de domínio: `produto`, `produto/remedio/atributos`, `produto/remedio/formulacao`, `preco` e `estoque`.
+Pacote raiz: `com.josepacheco.tcc`. As camadas são `controller → service → repository → model`, com classes `dto` entre controller e service. Todas as camadas repetem os mesmos subpacotes de domínio: `produto`, `produto/remedio/atributos`, `produto/remedio/formulacao`, `preco`, `estoque` e `venda`.
 
-Os módulos de produto, preço e estoque estão implementados. `model/venda` (`Venda`, `ItemVenda`) e seus repositories existem, mas ainda não têm service nem controller. No frontend, o menu de vendas mostra o aviso "em construção".
+Os quatro módulos previstos no escopo (produto, preço, estoque e venda) estão implementados.
 
 ### Módulo de estoque
 - **Lote**: o saldo fica no próprio `Lote` (`quantidadeAtual`); não existe mais a entidade `Estoque`. A unicidade é **produto + `codigoLote`**, porque laboratórios diferentes podem repetir códigos.
   - **Remédios** (incluindo genéricos) exigem código do lote e validade na entrada.
   - **Produtos gerais** usam um **lote único** automático (`EstoqueService.CODIGO_LOTE_UNICO = "UNICO"`, validade nula). Código e validade enviados são ignorados.
   - O estoque é contado em **unidades inteiras** da `MedidaPadrao` do produto. Não há fracionamento.
-- **`MovimentacaoEstoque`**: registro imutável de cada alteração de saldo, com tipo (`TipoMovimentacao`: `ENTRADA`, `SAIDA_VENDA`, `AJUSTE_INVENTARIO`, `PERDA`, `DEVOLUCAO`), quantidade com sinal, saldo após, data/hora e observação. Nas entradas, guarda também `custoUnitario` e `fornecedor` (só o nome; não há cadastro de fornecedores nem nota fiscal).
+- **`MovimentacaoEstoque`**: registro imutável de cada alteração de saldo, com tipo (`TipoMovimentacao`: `ENTRADA`, `SAIDA_VENDA`, `AJUSTE_INVENTARIO`, `PERDA`, `DEVOLUCAO`, `CANCELAMENTO_VENDA`), quantidade com sinal, saldo após, data/hora e observação. Nas entradas, guarda também `custoUnitario` e `fornecedor` (só o nome; não há cadastro de fornecedores nem nota fiscal).
   - Toda mudança de saldo passa por `EstoqueService.movimentar(...)`, que atualiza o lote e grava a movimentação na mesma transação. Não altere `quantidadeAtual` por fora dele.
 - **Regras**:
   - não se dá entrada em lote vencido;
@@ -93,7 +93,34 @@ Os módulos de produto, preço e estoque estão implementados. `model/venda` (`V
   - perda e devolução exigem motivo;
   - "vencido" = validade anterior a hoje; "a vencer" = vence em até `DIAS_ALERTA_VENCIMENTO` (30) dias;
   - o estoque mínimo é o campo opcional `Produto.estoqueMinimo`, e o produto entra no alerta quando o saldo disponível fica ≤ mínimo.
-- **Baixa por venda (FEFO)**: `EstoqueService.baixarEstoque(ean, quantidade, observacao)` consome primeiro o lote que vence antes, ignora os vencidos e pode dividir a baixa entre lotes. Ela trava os lotes com `PESSIMISTIC_WRITE` e devolve `List<LoteBaixado>` (lote + quantidade), para o módulo de vendas preencher `ItemVenda.lote`. Ainda não há endpoint: ela deve ser chamada pelo service de vendas, dentro da transação da venda.
+- **Baixa por venda (FEFO)**: `EstoqueService.baixarEstoque(ean, quantidade, observacao)` consome primeiro o lote que vence antes, ignora os vencidos e pode dividir a baixa entre lotes. Ela trava os lotes com `PESSIMISTIC_WRITE` e devolve `List<LoteBaixado>` (lote + quantidade), usada pelo `VendaService` para preencher `ItemVenda.lote`. Não tem endpoint próprio: é chamada dentro da transação da venda. O estorno de venda cancelada usa `estornarBaixa(lote, quantidade, observacao)`.
+
+### Módulo de venda
+- **Modelo**:
+  - `Venda`: `valorBruto`, `desconto` (R$ sobre o total), `valorTotal`, `formaPagamento` (`DINHEIRO`, `CARTAO_DEBITO`, `CARTAO_CREDITO`, `PIX`; uma por venda), `valorRecebido`/`troco` (só em dinheiro), `status` (`CONCLUIDA`/`CANCELADA`) e dados do cancelamento.
+  - `Venda.itens` usa `mappedBy = "venda"`; a chave estrangeira fica em `item_venda`.
+  - `ItemVenda` guarda produto, **lote**, quantidade e o **preço cobrado no momento**, que não muda se o preço do produto for alterado depois.
+  - Como a baixa FEFO pode usar vários lotes, um produto pode gerar **vários `ItemVenda`**, um por lote, com os mesmos dados de receita.
+- **Registro (`VendaService.registrarVenda`)**, numa transação única:
+  1. valida **tudo antes de gravar**: produto, preço atual (sem preço = 409), saldo disponível (409), receita, desconto ≤ valor bruto e, em dinheiro, valor recebido ≥ total;
+  2. salva a venda, para gerar o número usado na observação das movimentações ("Venda nº X");
+  3. chama `baixarEstoque` para cada produto. A baixa revalida o saldo com os lotes travados; se uma venda concorrente esgotar o estoque nesse meio-tempo, a transação inteira é desfeita.
+
+  Um mesmo EAN não pode aparecer duas vezes na venda (400).
+- **Receita** (pelo `ControleReceita.tipoControle` do remédio):
+  - `sob_prescricao` exige `receitaApresentada = true`;
+  - `especial` exige também paciente, prescritor, registro do prescritor e número da receita (`DadosReceita`, `@Embeddable` em `item_venda`);
+  - `isento` e produtos gerais ignoram os dados de receita enviados;
+  - não há integração com o SNGPC.
+- **Cancelamento**: a venda inteira, com motivo obrigatório. Ela é marcada `CANCELADA` (nunca apagada) e cada item volta ao lote de origem como `CANCELAMENTO_VENDA`. Cancelar de novo dá 409.
+- **Rotas** em `/api/venda`:
+  - `GET /produto/{ean}` (preço atual, saldo e exigência de receita, para o caixa);
+  - `POST /`;
+  - `GET /?inicio=&fim=` (padrão: hoje; 204 se vazio);
+  - `GET /{id}`;
+  - `POST /{id}/cancelamento`;
+  - `GET /resumo?data=` (fechamento do dia, só com as concluídas; inclui todas as formas de pagamento, mesmo sem vendas).
+- O `VendaController` segue o estilo do `EstoqueController`.
 - **Rotas** em `/api/estoque`:
   - `GET /` (saldos de todos os produtos) e `GET /{ean}` (saldo e lotes);
   - `PUT /{ean}/estoque_minimo`;
@@ -136,7 +163,8 @@ Rotas começam em `/api/produto/...` e espelham o caminho do pacote. Segmentos c
 
 ## Arquitetura do frontend
 
-- `src/App.jsx` concentra todo o roteamento. `MainLayout` renderiza a barra superior e o `ToastContainer`, e `ProdutoLayout` acrescenta a barra lateral do módulo de produto. As rotas do módulo ficam em `/produtos/*`. A gestão de preços fica em `/precos` (`Precos.jsx`), sem barra lateral. O módulo de estoque tem o próprio layout (`EstoqueLayout`) em `/estoque/*`, com as telas `EntradaEstoque`, `ConsultaEstoque`, `AjustesEstoque`, `AlertasEstoque` e `MovimentacoesEstoque`.
+- `src/App.jsx` concentra todo o roteamento. `MainLayout` renderiza a barra superior e o `ToastContainer`, e `ProdutoLayout` acrescenta a barra lateral do módulo de produto. As rotas do módulo ficam em `/produtos/*`. A gestão de preços fica em `/precos` (`Precos.jsx`), sem barra lateral. O módulo de estoque tem o próprio layout (`EstoqueLayout`) em `/estoque/*`, com as telas `EntradaEstoque`, `ConsultaEstoque`, `AjustesEstoque`, `AlertasEstoque` e `MovimentacoesEstoque`. O de vendas (`VendaLayout`) fica em `/vendas/*`, com `CaixaVenda` (PDV), `HistoricoVendas` e `ResumoVendas`.
+- No `CaixaVenda`, o `SeletorProduto` recebe `ean={null}`, então o campo volta a ficar vazio depois de cada leitura e o mesmo produto lido de novo soma 1 à quantidade. Os totais são calculados em centavos (inteiros), para evitar erros de ponto flutuante. Para a data de hoje, use `dataDeHoje()` de `formatacao.js`, nunca `toISOString()`, que usa UTC.
 - Peças compartilhadas (até agora usadas pelo estoque):
   - `src/components/SeletorProduto.jsx`: busca de produto por nome ou EAN com react-select; também funciona com leitor de código de barras;
   - `src/components/EtiquetaSituacao.jsx`: situação de validade do lote;

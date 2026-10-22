@@ -10,6 +10,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.OffsetDateTime;
 import java.util.LinkedHashMap;
@@ -39,6 +40,12 @@ public class TratadorDeErros {
     public ResponseEntity<Map<String, Object>> tratarCorpoInvalido(HttpMessageNotReadableException excecao, HttpServletRequest requisicao) {
         log.warn("Corpo inválido em {}: {}", requisicao.getRequestURI(), excecao.getMostSpecificCause().getMessage());
         return montarResposta("O corpo da requisição é inválido ou está mal formatado (verifique números e datas).", requisicao);
+    }
+
+    // Parâmetro de URL com tipo errado (ex.: data fora do formato aaaa-mm-dd, id não numérico)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>> tratarParametroInvalido(MethodArgumentTypeMismatchException excecao, HttpServletRequest requisicao) {
+        return montarResposta("O parâmetro '" + excecao.getName() + "' é inválido: " + excecao.getValue() + ".", requisicao);
     }
 
     private ResponseEntity<Map<String, Object>> montarResposta(String mensagem, HttpServletRequest requisicao) {
