@@ -10,7 +10,7 @@ Este arquivo orienta o Claude Code (claude.ai/code) ao trabalhar com o código d
 
 ## Branch de trabalho
 
-O desenvolvimento acontece na branch **`tcc2/sprint1-programacao`**. A `main` está desatualizada em relação a ela; não crie trabalho novo a partir da `main`.
+O desenvolvimento acontece na branch **`tcc2/sprint1-programacao`**. A `main` está desatualizada em relação a ela e **não deve ser alterada**: nada de commits, merges ou push na `main`, nem criar trabalho novo a partir dela. A branch padrão no GitHub continua sendo a `main`, por decisão do autor; não a troque sem que ele peça.
 
 ## Projeto
 
