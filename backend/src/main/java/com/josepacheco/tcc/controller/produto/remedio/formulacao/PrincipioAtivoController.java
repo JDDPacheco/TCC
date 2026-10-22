@@ -38,6 +38,8 @@ public class PrincipioAtivoController {
                 return new ResponseEntity<>(principiosAtivosDTOs, HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ResponseStatusException e) {
+            throw e; // erros de regra de negócio (404, 409, 400) mantêm o status definido no service
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -58,6 +60,8 @@ public class PrincipioAtivoController {
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+        } catch (ResponseStatusException e) {
+            throw e; // erros de regra de negócio (404, 409, 400) mantêm o status definido no service
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -74,6 +78,8 @@ public class PrincipioAtivoController {
         try{
             PrincipioAtivoDTO createdPrincipioAtivo = principioAtivoService.create(principioAtivoDTO);
             return new ResponseEntity<>(createdPrincipioAtivo, HttpStatus.CREATED);
+        } catch (ResponseStatusException e) {
+            throw e; // erros de regra de negócio (404, 409, 400) mantêm o status definido no service
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -86,14 +92,16 @@ public class PrincipioAtivoController {
             @ApiResponse(responseCode = "500", description = "Erro interno no servidor")
     })
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PrincipioAtivoDTO> update(@PathVariable Long id, @Valid @RequestBody String principioNome) {
+    public ResponseEntity<PrincipioAtivoDTO> update(@PathVariable Long id, @Valid @RequestBody PrincipioAtivoDTO principioAtivoInputDTO) {
         try {
-            PrincipioAtivoDTO principioAtivoDTO = principioAtivoService.update(id, principioNome);
+            PrincipioAtivoDTO principioAtivoDTO = principioAtivoService.update(id, principioAtivoInputDTO.getNome().trim());
             if (principioAtivoDTO != null) {
                 return new ResponseEntity<>(principioAtivoDTO, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+        } catch (ResponseStatusException e) {
+            throw e; // erros de regra de negócio (404, 409, 400) mantêm o status definido no service
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -70,6 +70,8 @@ npm run build
 - **Mensagens de erro**: `server.error.include-message=always` faz a mensagem das `ResponseStatusException` chegar no campo `message` do corpo. `config/TratadorDeErros.java` converte erros de validação e JSON mal formado em 400 com mensagem legível, no mesmo formato. No frontend, use `mensagemDeErro(error, textoPadrao)` de `src/utils/formatacao.js`. Os controllers antigos (try/catch genérico) também passam a expor a mensagem da exceção original.
 - **Testar a API com acentos pelo terminal**: no Git Bash do Windows, o `curl -d '...'` não envia acentos em UTF-8 e o backend responde "corpo mal formatado". Grave o JSON num arquivo e use `--data-binary @arquivo.json`.
 - **Testes**: `backend/src/test/resources/application.properties` substitui o de produção e usa H2 em memória (modo MySQL, `create-drop`). O `DataLoader` roda nos testes e popula as tabelas de apoio. Os testes de service/controller usam `@SpringBootTest` + `@Transactional`, então cada teste é desfeito ao final. No MockMvc, o corpo JSON de uma `ResponseStatusException` não é gerado (ele vem da página `/error`); confira a mensagem com `status().reason(...)`. O frontend não tem testes.
+  - Há testes de service (`service/<módulo>/*ServiceTest`) e de HTTP (`controller/<módulo>/*ControllerTest`) para produto, preço e estoque.
+  - **Bugs conhecidos** ficam registrados como testes com `@Disabled("Bug conhecido: ...")`, que descrevem o comportamento correto (hoje não há nenhum). Ao corrigir um bug, remova o `@Disabled` e deixe o teste como regressão. Para rodar testes desativados: `./mvnw test -Dtest=<Classe> "-DargLine=-Djunit.jupiter.conditions.deactivate=org.junit.*DisabledCondition"`.
 
 ## Arquitetura do backend
 
@@ -126,7 +128,8 @@ Os módulos de produto, preço e estoque estão implementados. `model/venda` (`V
 Todos os controllers seguem o mesmo modelo:
 - `list` retorna 200, ou **204 com corpo vazio quando não há registros**.
 - `detalhes` busca por id; `create` retorna 201; `update` atualiza por id.
-- Cada endpoint tem anotações Swagger `@Operation`/`@ApiResponses`, e o corpo fica num try/catch que relança como `ResponseStatusException`.
+- Cada endpoint tem anotações Swagger `@Operation`/`@ApiResponses`, e o corpo fica num try/catch. Um `catch (ResponseStatusException e) { throw e; }` vem **antes** do `catch (Exception e)` genérico, para que os erros de regra de negócio do service (404, 409, 400) cheguem ao cliente com o status original. Mantenha essa ordem ao criar endpoints nesse estilo.
+- Nos services, a busca por id usa `findById(...).orElseThrow(404)` (método `buscarPorId`). Não use `getReferenceById`: ele não falha para id inexistente, e o erro só aparece depois, como 500.
 - Os endpoints de exclusão existem, mas estão comentados.
 
 Rotas começam em `/api/produto/...` e espelham o caminho do pacote. Segmentos com mais de uma palavra usam underscore (ex.: `medida_padrao`, `principio_ativo`).

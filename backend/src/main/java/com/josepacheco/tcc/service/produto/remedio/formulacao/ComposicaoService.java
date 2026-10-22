@@ -6,7 +6,9 @@ import com.josepacheco.tcc.repository.produto.remedio.formulacao.ComposicaoRepos
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.MedidaBasicaRepository;
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.PrincipioAtivoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ public class ComposicaoService {
     }
 
     public ComposicaoDTO getById(Long id){
-        return new ComposicaoDTO(composicaoRepository.getReferenceById(id));
+        return new ComposicaoDTO(buscarPorId(id));
     }
 
     public ComposicaoDTO create(ComposicaoDTO composicaoDTO){
@@ -42,7 +44,7 @@ public class ComposicaoService {
 
     public ComposicaoDTO update(Long id, ComposicaoDTO composicaoDTO){
         // Encontrando concentracao no banco de dados
-        Composicao composicaoEncontrada = composicaoRepository.getReferenceById(id);
+        Composicao composicaoEncontrada = buscarPorId(id);
 
         // Montando nova concentracao com valores novos
         Composicao composicaoNova = composicaoDTO.build(medidaBasicaRepository, principioAtivoRepository);
@@ -66,4 +68,9 @@ public class ComposicaoService {
 //            return false;
 //        }
 //    }
+
+    private Composicao buscarPorId(Long id) {
+        return composicaoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Composição não encontrada com id: " + id));
+    }
 }

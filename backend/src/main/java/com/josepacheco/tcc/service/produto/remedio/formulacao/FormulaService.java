@@ -6,7 +6,9 @@ import com.josepacheco.tcc.model.produto.remedio.formulacao.Formula;
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.ComposicaoRepository;
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.FormulaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ public class FormulaService {
     }
 
     public FormulaOutputDTO getById(Long id){
-        return new FormulaOutputDTO(formulaRepository.getReferenceById(id));
+        return new FormulaOutputDTO(buscarPorId(id));
     }
 
     public FormulaOutputDTO create(FormulaInputDTO formulaInputDTO){
@@ -39,7 +41,7 @@ public class FormulaService {
 
     public FormulaOutputDTO update(Long id, FormulaInputDTO formulaInputDTO){
         // Encontrando formula no banco de dados
-        Formula formulaEncontrada = formulaRepository.getReferenceById(id);
+        Formula formulaEncontrada = buscarPorId(id);
 
         // Montando nova formula com valores novos
         Formula formulaNova = formulaInputDTO.build(composicaoRepository);
@@ -58,4 +60,9 @@ public class FormulaService {
 //            return false;
 //        }
 //    }
+
+    private Formula buscarPorId(Long id) {
+        return formulaRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fórmula não encontrada com id: " + id));
+    }
 }

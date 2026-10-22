@@ -4,7 +4,9 @@ import com.josepacheco.tcc.dto.produto.remedio.formulacao.PrincipioAtivoDTO;
 import com.josepacheco.tcc.model.produto.remedio.formulacao.PrincipioAtivo;
 import com.josepacheco.tcc.repository.produto.remedio.formulacao.PrincipioAtivoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ public class PrincipioAtivoService {
     }
 
     public PrincipioAtivoDTO getById(Long id){
-        return new PrincipioAtivoDTO(principioAtivoRepository.getReferenceById(id));
+        return new PrincipioAtivoDTO(buscarPorId(id));
     }
 
     public PrincipioAtivoDTO create(PrincipioAtivoDTO principioAtivoDTO){
@@ -33,7 +35,7 @@ public class PrincipioAtivoService {
     }
 
     public PrincipioAtivoDTO update(Long id, String nome){
-        PrincipioAtivo principioAtivo = principioAtivoRepository.getReferenceById(id);
+        PrincipioAtivo principioAtivo = buscarPorId(id);
         principioAtivo.setNome(nome);
         return new PrincipioAtivoDTO(principioAtivoRepository.save(principioAtivo));
     }
@@ -47,4 +49,9 @@ public class PrincipioAtivoService {
 //            return false;
 //        }
 //    }
+
+    private PrincipioAtivo buscarPorId(Long id) {
+        return principioAtivoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Princípio ativo não encontrado com id: " + id));
+    }
 }

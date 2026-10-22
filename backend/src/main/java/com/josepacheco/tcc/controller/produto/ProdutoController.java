@@ -39,6 +39,8 @@ public class ProdutoController {
                 return new ResponseEntity<>(produtosDTO, HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (ResponseStatusException e) {
+            throw e; // erros de regra de negócio (404, 409, 400) mantêm o status definido no service
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -55,6 +57,8 @@ public class ProdutoController {
         try{
             ProdutoDTO produtoDTOCriado = produtoService.create(produtoDTO);
             return new ResponseEntity<>(produtoDTOCriado, HttpStatus.CREATED);
+        } catch (ResponseStatusException e) {
+            throw e; // erros de regra de negócio (404, 409, 400) mantêm o status definido no service
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -75,6 +79,8 @@ public class ProdutoController {
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
+        } catch (ResponseStatusException e) {
+            throw e; // erros de regra de negócio (404, 409, 400) mantêm o status definido no service
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

@@ -4,7 +4,9 @@ import com.josepacheco.tcc.dto.produto.remedio.LaboratorioDTO;
 import com.josepacheco.tcc.model.produto.remedio.atributos.Laboratorio;
 import com.josepacheco.tcc.repository.produto.remedio.atributos.LaboratorioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ public class LaboratorioService {
     }
 
     public LaboratorioDTO getById(Long id){
-        return new LaboratorioDTO(laboratorioRepository.getReferenceById(id));
+        return new LaboratorioDTO(buscarPorId(id));
     }
 
     public LaboratorioDTO create(LaboratorioDTO laboratorioDTO){
@@ -34,7 +36,7 @@ public class LaboratorioService {
 
     public LaboratorioDTO update(Long id, LaboratorioDTO laboratorioDTO){
         // Encontrando laboratório no banco de dados
-        Laboratorio laboratorioEncontrado = laboratorioRepository.getReferenceById(id);
+        Laboratorio laboratorioEncontrado = buscarPorId(id);
 
         // Montando novo laboratório com valores novos
         Laboratorio laboratorioNovo = laboratorioDTO.build();
@@ -55,4 +57,9 @@ public class LaboratorioService {
 //            return false;
 //        }
 //    }
+
+    private Laboratorio buscarPorId(Long id) {
+        return laboratorioRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Laboratório não encontrado com id: " + id));
+    }
 }
