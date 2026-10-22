@@ -8,6 +8,10 @@ Este arquivo orienta o Claude Code (claude.ai/code) ao trabalhar com o código d
 - Toda documentação (README, CLAUDE.md, comentários, mensagens da API, mensagens de commit, textos do TCC) deve ser escrita **em português**.
 - Identificadores no código também seguem o português (`Produto`, `Remedio`, `listar`...). Mantenha essa convenção.
 
+## Branch de trabalho
+
+O desenvolvimento acontece na branch **`tcc2/sprint1-programacao`**. A `main` está desatualizada em relação a ela; não crie trabalho novo a partir da `main`.
+
 ## Projeto
 
 **Dr.StoreSys** é um sistema de gestão para drogarias desenvolvido como TCC do curso de Análise e Desenvolvimento de Sistemas do IFAM.
