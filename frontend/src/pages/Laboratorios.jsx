@@ -5,8 +5,9 @@ import { toast } from 'react-toastify';
 export default function Laboratorios() {
   const [laboratorios, setLaboratorios] = useState([]);
   
-  // Confirme se o nome do campo é 'marca' ou 'nome' no seu backend
-  const [novoLaboratorio, setNovoLaboratorio] = useState({ marca: '' });
+  // Campos esperados pelo LaboratorioDTO do backend (ambos obrigatórios)
+  const laboratorioVazio = { marca: '', nomeFantasia: '' };
+  const [novoLaboratorio, setNovoLaboratorio] = useState(laboratorioVazio);
   const [idEditando, setIdEditando] = useState(null);
 
   // ESTADO DO FILTRO
@@ -14,7 +15,7 @@ export default function Laboratorios() {
 
   const carregarLaboratorios = () => {
     api.get('/api/produto/remedio/laboratorio')
-      .then((response) => setLaboratorios(response.data))
+      .then((response) => setLaboratorios(response.data || [])) // 204 (lista vazia) vem sem corpo
       .catch((error) => console.error("Erro ao buscar laboratórios:", error));
   };
 
@@ -37,13 +38,13 @@ export default function Laboratorios() {
     );
 
     if (confirmacao) {
-      setNovoLaboratorio({ marca: laboratorio.marca }); 
+      setNovoLaboratorio({ marca: laboratorio.marca, nomeFantasia: laboratorio.nomeFantasia });
       setIdEditando(laboratorio.id);
     }
   };
 
   const cancelarEdicao = () => {
-    setNovoLaboratorio({ marca: '' });
+    setNovoLaboratorio(laboratorioVazio);
     setIdEditando(null);
   };
 
@@ -65,7 +66,7 @@ export default function Laboratorios() {
       api.post('/api/produto/remedio/laboratorio', novoLaboratorio)
         .then(() => {
           toast.success("Laboratório cadastrado com sucesso!");
-          setNovoLaboratorio({ marca: '' });
+          setNovoLaboratorio(laboratorioVazio);
           carregarLaboratorios();
         })
         .catch((error) => {
@@ -98,10 +99,19 @@ export default function Laboratorios() {
             placeholder="Nome da Marca (ex: Medley)" 
             value={novoLaboratorio.marca} 
             onChange={handleInputChange} 
-            required 
+            required
             style={{ padding: '8px' }}
           />
-          
+          <input
+            type="text"
+            name="nomeFantasia"
+            placeholder="Nome Fantasia / Razão Social (ex: EMS S/A)"
+            value={novoLaboratorio.nomeFantasia}
+            onChange={handleInputChange}
+            required
+            style={{ padding: '8px' }}
+          />
+
           <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
             <button type="submit" style={{ flex: 1, padding: '10px', cursor: 'pointer', backgroundColor: idEditando ? '#ffc107' : '#28a745', color: idEditando ? '#000' : 'white', border: 'none', borderRadius: '4px', fontWeight: 'bold' }}>
               {idEditando ? 'Salvar Correção' : 'Salvar Laboratório'}
@@ -140,6 +150,7 @@ export default function Laboratorios() {
               {/* O ID FOI OCULTADO DA INTERFACE */}
               <span style={{ fontWeight: '500', color: '#333' }}>
                 {lab.marca}
+                <small style={{ display: 'block', fontWeight: 'normal', color: '#777' }}>{lab.nomeFantasia}</small>
               </span>
               
               <button 
