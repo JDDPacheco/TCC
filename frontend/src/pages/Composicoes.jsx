@@ -5,7 +5,6 @@ import Select from 'react-select';
 import PrincipiosAtivos from './PrincipiosAtivos'; 
 
 export default function Composicoes() {
-  const [composicoes, setComposicoes] = useState([]);
   const [principios, setPrincipios] = useState([]);
   
   // NOVO: Estado para guardar as unidades de medida vindas do backend
@@ -27,12 +26,6 @@ export default function Composicoes() {
       .catch((err) => console.error("Erro ao buscar princípios ativos:", err));
   };
 
-  const carregarComposicoes = () => {
-    api.get('/api/produto/remedio/formulacao/composicao')
-      .then((res) => setComposicoes(res.data))
-      .catch((err) => console.error("Erro ao buscar composições:", err));
-  };
-
   // NOVO: Função para buscar as medidas
   const carregarMedidas = () => {
     // Confirme se o caminho da URL é este mesmo
@@ -43,7 +36,6 @@ export default function Composicoes() {
 
   useEffect(() => {
     carregarPrincipios();
-    carregarComposicoes();
     carregarMedidas(); // Chama a função ao abrir a tela
   }, []);
 
@@ -99,7 +91,6 @@ export default function Composicoes() {
           idPrincipioAtivo: '', quantiaPrincipio: '', unidadeMedidaPrincipio: '',
           quantiaExcipiente: '', unidadeMedidaExcipiente: ''
         });
-        carregarComposicoes();
       })
       .catch((error) => {
         console.error("Erro detalhado do backend:", error.response?.data);

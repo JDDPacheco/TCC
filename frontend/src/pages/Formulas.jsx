@@ -7,7 +7,6 @@ import Select from 'react-select';
 import Composicoes from './Composicoes'; 
 
 export default function Formulas() {
-  const [formulas, setFormulas] = useState([]);
   const [composicoesDisponiveis, setComposicoesDisponiveis] = useState([]);
 
   // 2. ESTADO DO MODAL DE COMPOSIÇÕES
@@ -18,12 +17,6 @@ export default function Formulas() {
   const [composicaoSelecionada, setComposicaoSelecionada] = useState(null);
   const [idsComposicoesEscolhidas, setIdsComposicoesEscolhidas] = useState([]);
 
-  const carregarFormulas = () => {
-    api.get('/api/produto/remedio/formulacao/formula')
-      .then((res) => setFormulas(res.data))
-      .catch((err) => console.error("Erro ao buscar fórmulas:", err));
-  };
-
   // 3. ISOLAMOS A BUSCA DE COMPOSIÇÕES para atualizar após o fecho do modal
   const carregarComposicoes = () => {
     api.get('/api/produto/remedio/formulacao/composicao')
@@ -32,7 +25,6 @@ export default function Formulas() {
   };
 
   useEffect(() => {
-    carregarFormulas();
     carregarComposicoes();
   }, []);
 
@@ -85,8 +77,7 @@ export default function Formulas() {
     api.post('/api/produto/remedio/formulacao/formula', payload)
       .then(() => {
         toast.success("Fórmula registada com sucesso!");
-        setIdsComposicoesEscolhidas([]); 
-        carregarFormulas(); 
+        setIdsComposicoesEscolhidas([]);
       })
       .catch((error) => {
         console.error("Erro ao registar fórmula:", error);
