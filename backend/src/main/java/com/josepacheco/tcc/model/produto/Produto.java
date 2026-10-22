@@ -21,7 +21,22 @@ public class Produto {
     @JoinColumn(name = "unidadeDeMedida", nullable = false)
     private MedidaPadrao unidadeDeMedida;
 
+    @Column
+    private Integer estoqueMinimo; // quantidade mínima desejada em estoque (opcional); abaixo dela o produto entra no alerta de estoque baixo
+
     public Produto() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Integer getEstoqueMinimo() {
+        return estoqueMinimo;
+    }
+
+    public void setEstoqueMinimo(Integer estoqueMinimo) {
+        this.estoqueMinimo = estoqueMinimo;
     }
 
     public Produto(String nomeComercial, String ean, MedidaPadrao unidadeDeMedida) {

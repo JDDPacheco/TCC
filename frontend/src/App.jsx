@@ -11,6 +11,11 @@ import Formulas from './pages/Formulas';
 import CadastroProduto from './pages/CadastroProduto';
 import ConsultaProdutos from './pages/ConsultaProdutos';
 import Precos from './pages/Precos';
+import EntradaEstoque from './pages/EntradaEstoque';
+import ConsultaEstoque from './pages/ConsultaEstoque';
+import AjustesEstoque from './pages/AjustesEstoque';
+import AlertasEstoque from './pages/AlertasEstoque';
+import MovimentacoesEstoque from './pages/MovimentacoesEstoque';
 
 // ==========================================
 // 1. LAYOUT PRINCIPAL (O esqueleto da tela)
@@ -71,6 +76,29 @@ function ProdutoLayout() {
 }
 
 // ==========================================
+// 2.1 LAYOUT DO MÓDULO DE ESTOQUE (Com Sidebar)
+// ==========================================
+function EstoqueLayout() {
+  return (
+    <div className="main-body">
+      <aside className="sidebar">
+        <h3>Submenus</h3>
+        <Link to="/estoque/entrada">Entrada de Mercadoria</Link>
+        <Link to="/estoque/consulta">Consulta de Estoque</Link>
+        <Link to="/estoque/ajustes">Ajustes e Perdas</Link>
+        <hr />
+        <Link to="/estoque/alertas">Alertas</Link>
+        <Link to="/estoque/movimentacoes">Movimentações</Link>
+      </aside>
+
+      <main className="content-area">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+// ==========================================
 // 3. TELAS (Páginas Falsas por enquanto)
 // ==========================================
 const Home = () => (
@@ -114,9 +142,18 @@ function App() {
           {/* Módulos de Preços */}
           <Route path="precos" element={<Precos />} />
 
+          {/* Módulo de Estoque */}
+          <Route path="estoque" element={<EstoqueLayout />}>
+            <Route index element={<h2>Selecione uma opção no menu lateral</h2>} />
+            <Route path="entrada" element={<EntradaEstoque />} />
+            <Route path="consulta" element={<ConsultaEstoque />} />
+            <Route path="ajustes" element={<AjustesEstoque />} />
+            <Route path="alertas" element={<AlertasEstoque />} />
+            <Route path="movimentacoes" element={<MovimentacoesEstoque />} />
+          </Route>
+
           {/* Outros Módulos (Ainda sem submenu) */}
           <Route path="vendas" element={<TelaVazia titulo="Gestão de Vendas" />} />
-          <Route path="estoque" element={<TelaVazia titulo="Gestão de Estoque" />} />
 
         </Route>
       </Routes>

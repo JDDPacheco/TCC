@@ -44,8 +44,8 @@ São duas aplicações independentes, sem build na raiz:
 Backend (executar em `backend/`; no Windows use `mvnw.cmd`):
 ```
 ./mvnw spring-boot:run                 # sobe a API na porta 8080
-./mvnw test                            # roda os testes
-./mvnw test -Dtest=TccApplicationTests # uma classe de teste (acrescente #metodo para um único método)
+./mvnw test                            # roda os testes (H2 em memória; não precisa do MySQL)
+./mvnw test -Dtest=EstoqueServiceTest  # uma classe de teste (acrescente #metodo para um único método)
 ./mvnw package                         # gera o jar
 ```
 Swagger UI: http://localhost:8080/swagger-ui.html
@@ -60,20 +60,46 @@ npm run build
 
 ## Ambiente e armadilhas
 
-- **Banco de dados**: MySQL em `localhost`, schema `drStoreSys` (criado automaticamente). As credenciais ficam em `backend/src/main/resources/application.properties`. Com `ddl-auto=update` não há migrations: o schema é gerado a partir das entidades JPA. O H2 está no classpath de teste, mas não existe perfil de teste, então o único teste (`contextLoads`) precisa do MySQL rodando.
-- **`ddl-auto=update` não remove colunas**: ao renomear ou apagar um campo de uma entidade, a coluna antiga continua no banco. Se ela for `NOT NULL`, os inserts passam a falhar com "Field '...' doesn't have a default value" (aconteceu com `preco`, que tinha `data_vigencia`, `preco_custo` e `is_ativo` da versão antiga). Nesse caso, apague a coluna ou a tabela à mão.
+- **Banco de dados**: MySQL em `localhost`, schema `drStoreSys` (criado automaticamente). As credenciais ficam em `backend/src/main/resources/application.properties`. Com `ddl-auto=update` não há migrations: o schema é gerado a partir das entidades JPA.
+- **`ddl-auto=update` não remove colunas nem restrições**: ao renomear ou apagar um campo de uma entidade, a coluna antiga continua no banco. Se ela for `NOT NULL`, os inserts passam a falhar com "Field '...' doesn't have a default value" (aconteceu com `preco`, que tinha `data_vigencia`, `preco_custo` e `is_ativo` da versão antiga). O mesmo vale para restrições: um banco criado antes do módulo de estoque mantém em `lote` o `UNIQUE` antigo só em `codigo_lote` e o `data_validade NOT NULL`, além da tabela `estoque`, que não é mais usada. Nesses casos, ajuste ou apague a coluna/tabela à mão.
 - **Dados iniciais**: `config/DataLoader.java` (um `CommandLineRunner`) popula as tabelas de apoio (controle de receita, medidas básicas/farmacêuticas/padrão, apresentações) e cria um exemplo de princípio ativo, composição, fórmula e laboratório. Cada tabela só é populada se estiver vazia. Novos valores de apoio devem ser adicionados ali.
 - **MySQL 8.4+ / Docker**: a URL do banco já inclui `allowPublicKeyRetrieval=true`, necessário para a autenticação `caching_sha2_password` com `useSSL=false`. Sem MySQL instalado, dá para subir um container: `docker run -d --name drstoresys-mysql -e MYSQL_ROOT_PASSWORD=<senha do application.properties> -p 3306:3306 mysql:8.4`.
 - **URL do backend no frontend**: `frontend/src/services/api.js` lê `VITE_API_URL` e, se ela não existir, usa `http://localhost:8080`. Para apontar para outra máquina (ex.: um IP da rede local), crie `frontend/.env.local` (ignorado pelo git) com `VITE_API_URL=http://<ip>:8080`. O CORS do backend (`config/CorsConfig.java`) libera qualquer origem (`*`).
 - **Segurança** (`config/SecurityConfig.java`): CSRF desativado e todas as requisições liberadas (`permitAll`). Ainda não há autenticação.
-- **Validação**: os DTOs usam anotações `jakarta.validation` e os controllers usam `@Valid`, mas o `spring-boot-starter-validation` não está no `pom.xml`. Provavelmente essas restrições não são aplicadas em tempo de execução.
-- **Testes**: só existe o teste de carregamento do contexto Spring. O frontend não tem testes.
+- **Validação**: o `spring-boot-starter-validation` está ativo, então as anotações `jakarta.validation` dos DTOs com `@Valid` são aplicadas. O payload do frontend precisa trazer todos os campos obrigatórios. Exemplo: o `ProdutoDTO` exige `ean` também no `PUT`, mesmo o produto sendo localizado pelo EAN da URL. Não use `@NotBlank` em campos que não sejam texto: isso gera erro 500. Para números, use `@NotNull`/`@Positive`.
+- **Mensagens de erro**: `server.error.include-message=always` faz a mensagem das `ResponseStatusException` chegar no campo `message` do corpo. `config/TratadorDeErros.java` converte erros de validação e JSON mal formado em 400 com mensagem legível, no mesmo formato. No frontend, use `mensagemDeErro(error, textoPadrao)` de `src/utils/formatacao.js`. Os controllers antigos (try/catch genérico) também passam a expor a mensagem da exceção original.
+- **Testar a API com acentos pelo terminal**: no Git Bash do Windows, o `curl -d '...'` não envia acentos em UTF-8 e o backend responde "corpo mal formatado". Grave o JSON num arquivo e use `--data-binary @arquivo.json`.
+- **Testes**: `backend/src/test/resources/application.properties` substitui o de produção e usa H2 em memória (modo MySQL, `create-drop`). O `DataLoader` roda nos testes e popula as tabelas de apoio. Os testes de service/controller usam `@SpringBootTest` + `@Transactional`, então cada teste é desfeito ao final. No MockMvc, o corpo JSON de uma `ResponseStatusException` não é gerado (ele vem da página `/error`); confira a mensagem com `status().reason(...)`. O frontend não tem testes.
 
 ## Arquitetura do backend
 
-Pacote raiz: `com.josepacheco.tcc`. As camadas são `controller → service → repository → model`, com classes `dto` entre controller e service. Todas as camadas repetem os mesmos subpacotes de domínio: `produto`, `produto/remedio/atributos`, `produto/remedio/formulacao` e `preco`.
+Pacote raiz: `com.josepacheco.tcc`. As camadas são `controller → service → repository → model`, com classes `dto` entre controller e service. Todas as camadas repetem os mesmos subpacotes de domínio: `produto`, `produto/remedio/atributos`, `produto/remedio/formulacao`, `preco` e `estoque`.
 
-Os módulos de produto e de preço estão implementados. `model/estoque` e `model/venda` (e seus repositories) existem, mas ainda não têm services nem controllers. No frontend, os menus correspondentes mostram o aviso "em construção".
+Os módulos de produto, preço e estoque estão implementados. `model/venda` (`Venda`, `ItemVenda`) e seus repositories existem, mas ainda não têm service nem controller. No frontend, o menu de vendas mostra o aviso "em construção".
+
+### Módulo de estoque
+- **Lote**: o saldo fica no próprio `Lote` (`quantidadeAtual`); não existe mais a entidade `Estoque`. A unicidade é **produto + `codigoLote`**, porque laboratórios diferentes podem repetir códigos.
+  - **Remédios** (incluindo genéricos) exigem código do lote e validade na entrada.
+  - **Produtos gerais** usam um **lote único** automático (`EstoqueService.CODIGO_LOTE_UNICO = "UNICO"`, validade nula). Código e validade enviados são ignorados.
+  - O estoque é contado em **unidades inteiras** da `MedidaPadrao` do produto. Não há fracionamento.
+- **`MovimentacaoEstoque`**: registro imutável de cada alteração de saldo, com tipo (`TipoMovimentacao`: `ENTRADA`, `SAIDA_VENDA`, `AJUSTE_INVENTARIO`, `PERDA`, `DEVOLUCAO`), quantidade com sinal, saldo após, data/hora e observação. Nas entradas, guarda também `custoUnitario` e `fornecedor` (só o nome; não há cadastro de fornecedores nem nota fiscal).
+  - Toda mudança de saldo passa por `EstoqueService.movimentar(...)`, que atualiza o lote e grava a movimentação na mesma transação. Não altere `quantidadeAtual` por fora dele.
+- **Regras**:
+  - não se dá entrada em lote vencido;
+  - reentrada num lote existente com outra validade é recusada;
+  - o ajuste recebe a **quantidade contada** e registra a diferença;
+  - perda e devolução exigem motivo;
+  - "vencido" = validade anterior a hoje; "a vencer" = vence em até `DIAS_ALERTA_VENCIMENTO` (30) dias;
+  - o estoque mínimo é o campo opcional `Produto.estoqueMinimo`, e o produto entra no alerta quando o saldo disponível fica ≤ mínimo.
+- **Baixa por venda (FEFO)**: `EstoqueService.baixarEstoque(ean, quantidade, observacao)` consome primeiro o lote que vence antes, ignora os vencidos e pode dividir a baixa entre lotes. Ela trava os lotes com `PESSIMISTIC_WRITE` e devolve `List<LoteBaixado>` (lote + quantidade), para o módulo de vendas preencher `ItemVenda.lote`. Ainda não há endpoint: ela deve ser chamada pelo service de vendas, dentro da transação da venda.
+- **Rotas** em `/api/estoque`:
+  - `GET /` (saldos de todos os produtos) e `GET /{ean}` (saldo e lotes);
+  - `PUT /{ean}/estoque_minimo`;
+  - `POST /entrada`, `/ajuste`, `/perda` e `/devolucao`;
+  - `GET /alertas/vencimento?dias=`, `/alertas/vencidos` e `/alertas/estoque_baixo`;
+  - `GET /movimentacoes?ean=&idLote=`.
+- O `EstoqueController` segue o estilo do `PrecoController`: sem try/catch, com os erros do service propagados (400/404/409). Tem as anotações Swagger e o 204 em listas vazias dos controllers de produto.
+- `SaldoProdutoOutputDTO`/`EstoqueService` usam `Hibernate.unproxy(produto)` antes de `instanceof Remedio`/`Generico`, porque o produto obtido via `Lote` pode ser um proxy do Hibernate.
 
 ### Módulo de preço
 - `Preco` guarda um **histórico**: cada alteração cria um registro novo (`produto`, `valorVenda` em `BigDecimal`, `dataInicioVigencia`), e nada é sobrescrito. O preço atual é o registro mais recente do produto (`findTopByProdutoEanOrderByDataInicioVigenciaDesc`).
@@ -107,6 +133,12 @@ Rotas começam em `/api/produto/...` e espelham o caminho do pacote. Segmentos c
 
 ## Arquitetura do frontend
 
-- `src/App.jsx` concentra todo o roteamento. `MainLayout` renderiza a barra superior e o `ToastContainer`, e `ProdutoLayout` acrescenta a barra lateral do módulo de produto. As rotas do módulo ficam em `/produtos/*`. A gestão de preços fica em `/precos` (`Precos.jsx`), sem barra lateral.
+- `src/App.jsx` concentra todo o roteamento. `MainLayout` renderiza a barra superior e o `ToastContainer`, e `ProdutoLayout` acrescenta a barra lateral do módulo de produto. As rotas do módulo ficam em `/produtos/*`. A gestão de preços fica em `/precos` (`Precos.jsx`), sem barra lateral. O módulo de estoque tem o próprio layout (`EstoqueLayout`) em `/estoque/*`, com as telas `EntradaEstoque`, `ConsultaEstoque`, `AjustesEstoque`, `AlertasEstoque` e `MovimentacoesEstoque`.
+- Peças compartilhadas (até agora usadas pelo estoque):
+  - `src/components/SeletorProduto.jsx`: busca de produto por nome ou EAN com react-select; também funciona com leitor de código de barras;
+  - `src/components/EtiquetaSituacao.jsx`: situação de validade do lote;
+  - `src/utils/formatacao.js`: moeda, datas e `mensagemDeErro`;
+  - `src/utils/estilos.js`: estilos inline comuns.
+- Datas `LocalDate` (`aaaa-mm-dd`) devem ser formatadas pelo texto (`formatarData`), nunca com `new Date(...)`: essa conversão interpreta a data como UTC e, no fuso de Manaus, mostra o dia anterior.
 - `src/pages/*.jsx` tem uma página autocontida por entidade. Cada página faz as requisições com a instância compartilhada do axios (`src/services/api.js`) e dá retorno ao usuário com `toast`. O estilo é quase todo inline (`style={{...}}`), além de classes globais em `App.css`/`index.css`.
 - `CadastroProduto.jsx` monta o `tipoProduto` (`"remedio"`, `"generico"` ou `"geral"`) que o DTO polimórfico do backend espera. Ele envia produtos gerais para `/api/produto/geral`, rota que o backend não define: o `ProdutoController` aceita todos os tipos em `POST /api/produto`.

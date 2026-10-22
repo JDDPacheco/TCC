@@ -8,6 +8,7 @@ import com.josepacheco.tcc.repository.produto.remedio.formulacao.PrincipioAtivoR
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Positive;
 
 public class ComposicaoDTO {
 
@@ -19,7 +20,7 @@ public class ComposicaoDTO {
     @Schema(description = "nome do princípio ativo", example = "dipirona")
     private String principioAtivo;
 
-    @NotBlank(message = "A quantia de princípio ativo é obrigatória.")
+    @Positive(message = "A quantia de princípio ativo deve ser maior que zero.")
     @Schema(description = "quantia de princípio ativo base", example = "300")
     private float quantiaPrincipio;
 

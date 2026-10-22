@@ -153,7 +153,7 @@ export default function ConsultaProdutos() {
     if (isRemedio) {
       payload = {
         nomeComercial: produtoEditando.nomeComercial,
-        //ean: produtoEditando.ean,
+        ean: produtoEditando.ean, // obrigatório no ProdutoDTO (o backend usa o EAN da URL para localizar o produto)
         unidadeDeMedida: produtoEditando.unidadeDeMedida,
         tipoProduto: produtoEditando.tipoProduto, // Mantém o original
         idLaboratorio: Number(produtoEditando.idLaboratorio),

@@ -10,8 +10,8 @@ O Dr.StoreSys é um protótipo de sistema integrado de gestão para drogarias de
 | --- | --- |
 | Gestão de Produto | Concluído: laboratórios, princípios ativos, composições, fórmulas, cadastro e consulta de produtos (geral, remédio e genérico) |
 | Gestão de Preço | Concluído: registro do preço de venda por produto, consulta do preço atual e histórico de preços |
+| Gestão de Estoque | Concluído: entrada de mercadoria por lote (com validade, custo de compra e fornecedor), consulta de saldo por produto e lote, ajustes de inventário, perdas, devoluções, alertas de vencimento e de estoque mínimo, e histórico de movimentações |
 | Gestão de Venda | Em construção |
-| Gestão de Estoque | Em construção |
 
 ## Tecnologias
 
@@ -69,6 +69,6 @@ A interface fica disponível em `http://localhost:5173`.
 ### Testes e lint
 
 ```
-cd backend && ./mvnw test     # requer o MySQL rodando
+cd backend && ./mvnw test     # usa banco H2 em memória; não precisa do MySQL
 cd frontend && npm run lint
 ```
