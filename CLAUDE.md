@@ -16,7 +16,8 @@ O desenvolvimento acontece na branch **`tcc2/sprint1-programacao`**. A `main` es
 
 **Dr.StoreSys** é um sistema de gestão para drogarias desenvolvido como TCC do curso de Análise e Desenvolvimento de Sistemas do IFAM.
 
-### Documentos em `docs/`
+### Documentos (branch `monografia`)
+Os documentos do TCC ficam na pasta `docs/` da branch **`monografia`**, e não na branch da aplicação. Para consultá-los sem trocar de branch: `git show monografia:docs/<arquivo>` (ou `git worktree add ../TCC-monografia monografia`).
 - `TCC-II_MONOGRAFIA_desenvolvimento.pdf`: **a nossa monografia**, em escrita. Ela define o escopo do sistema.
 - `ANTEPROJETO_TCC1_...pdf`: o nosso anteprojeto (TCC I), a proposta original do sistema de gestão de vendas, estoque e preços. Quando divergir da monografia, vale a monografia.
 - `TCC2_Harley_ Final_v2.pdf`: monografia de **outro autor**. Serve apenas de **exemplo de estrutura e formatação** para escrevermos a nossa. **Não** a use como referência sobre o nosso sistema (requisitos, modelo de dados, regras de negócio).
@@ -29,14 +30,13 @@ O desenvolvimento acontece na branch **`tcc2/sprint1-programacao`**. A `main` es
   - levantar requisitos funcionais e não funcionais para automatizar o **registro de vendas**, o **controle de estoque** e a **precificação**;
   - projetar a arquitetura e os modelos do sistema: diagramas de caso de uso, de classes e entidade-relacionamento;
   - implementar um **MVP** que integre vendas, estoque e preços.
-- **Situação da monografia**: introdução, problematização, justificativa e objetivos estão escritos. Os trechos em vermelho e laranja dos objetivos parecem ainda estar em revisão. Metodologia (1.4), organização do documento (1.5), fundamentação teórica (2), implementação da solução (3), considerações finais (4) e referências ainda estão vazios.
+- **Situação da monografia**: a monografia é escrita no Google Docs. Os textos dos capítulos 2, 3 e 4 e os diagramas do sistema (gerados a partir do código, com fontes em PlantUML) ficam em `docs/monografia/`, na branch `monografia`.
 
 Para requisitos, modelo de dados e regras de negócio já implementados, a fonte da verdade é o código deste repositório. Para o que o sistema deve cobrir, a referência é a nossa monografia.
 
 São duas aplicações independentes, sem build na raiz:
 - `backend/`: API REST em Spring Boot 3.4, Java 21, Maven, MySQL e springdoc/Swagger.
 - `frontend/`: React 19 + Vite em JavaScript puro (JSX), com axios, react-router-dom, react-select e react-toastify.
-- `docs/`: anteprojeto e monografias (veja acima).
 - `dbconfig/testes.sql`: SELECTs avulsos para inspecionar tabelas. Não é schema nem migration.
 
 ## Comandos

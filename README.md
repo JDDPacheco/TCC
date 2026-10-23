@@ -25,9 +25,10 @@ A **tela inicial** (acessada pelo nome "💊 Dr.StoreSys" na barra superior) mos
 ```
 backend/    API REST em Spring Boot
 frontend/   Interface web em React
-docs/       Anteprojeto, monografia do TCC (em desenvolvimento) e material de referência
 dbconfig/   Consultas SQL de apoio para inspecionar o banco
 ```
+
+O anteprojeto, a monografia e os diagramas do sistema ficam na branch `monografia`.
 
 ## Como executar
 
