@@ -1,0 +1,37 @@
+@startuml
+!pragma teoz true
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam monochrome true
+actor "Funcionário" as f
+participant "CaixaVenda\n(React)" as ui
+participant "VendaController" as vc
+participant "VendaService" as vs
+participant "EstoqueService" as es
+database "MySQL" as db
+f -> ui : lê o código de barras
+ui -> vc : GET /api/venda/produto/{ean}
+vc -> vs : consultarProdutoParaVenda(ean)
+vs --> ui : preço atual, saldo e exigência de receita
+f -> ui : informa desconto, pagamento\ne dados da receita
+ui -> vc : POST /api/venda
+vc -> vs : registrarVenda(venda)
+activate vs
+vs -> vs : valida produtos, preços, saldo,\nreceita, desconto e pagamento
+alt alguma validação falha
+  vs --> ui : 400 ou 409, com a mensagem do erro
+else tudo válido
+  vs -> db : grava a venda (gera o número)
+  loop para cada produto
+    vs -> es : baixarEstoque(ean, quantidade, "Venda nº X")
+    activate es
+    es -> db : trava os lotes não vencidos,\nordenados pela validade
+    es -> db : consome os lotes (FEFO) e grava\nas movimentações SAIDA_VENDA
+    es --> vs : lotes usados e quantidades
+    deactivate es
+    vs -> db : grava um ItemVenda por lote
+  end
+  vs --> ui : 201, com a venda registrada
+end
+deactivate vs
+@enduml

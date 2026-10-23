@@ -1,0 +1,20 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam monochrome true
+left to right direction
+node "Navegador web" {
+  component "Frontend (SPA)\nReact 19 + Vite\naxios, react-router-dom,\nreact-select, react-toastify" as spa
+}
+node "Backend: API REST\nJava 21 + Spring Boot 3.4" {
+  component "Controller\n(rotas HTTP e DTOs)" as ctl
+  component "Service\n(regras de negócio\ne transações)" as svc
+  component "Repository\n(Spring Data JPA)" as rep
+}
+database "MySQL\n(schema drStoreSys)" as db
+spa --> ctl : HTTP/JSON
+ctl --> svc
+svc --> rep
+rep --> db : JPA / Hibernate
+@enduml

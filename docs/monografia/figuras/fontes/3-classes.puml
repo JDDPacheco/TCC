@@ -1,0 +1,113 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+hide circle
+hide methods
+hide empty members
+class Produto {
+  nomeComercial : String
+  ean : String
+  estoqueMinimo : Integer
+}
+class Remedio {
+  quantidadeDoses : float
+  conteudo : float
+  pesoLiquido : float
+}
+class Generico
+class MedidaPadrao {
+  sigla : String
+  descricao : String
+}
+class Laboratorio {
+  marca : String
+  nomeFantasia : String
+}
+class ControleReceita {
+  tipoControle : String
+}
+class Apresentacao {
+  sigla : String
+  apresentacao : String
+}
+class MedidaFarmaceutica {
+  sigla : String
+  descricao : String
+}
+class Formula
+class Composicao {
+  quantiaPrincipio : float
+  quantiaExcipiente : float
+}
+class PrincipioAtivo {
+  nome : String
+}
+class MedidaBasica {
+  sigla : String
+  nome : String
+}
+class Preco {
+  valorVenda : BigDecimal
+  dataInicioVigencia : LocalDateTime
+}
+class Lote {
+  codigoLote : String
+  dataValidade : LocalDate
+  quantidadeAtual : Integer
+}
+class MovimentacaoEstoque {
+  tipo : TipoMovimentacao
+  quantidade : Integer
+  saldoApos : Integer
+  dataHora : LocalDateTime
+  observacao : String
+  custoUnitario : BigDecimal
+  fornecedor : String
+}
+class Venda {
+  dataVenda : LocalDateTime
+  valorBruto : BigDecimal
+  desconto : BigDecimal
+  valorTotal : BigDecimal
+  formaPagamento : FormaPagamento
+  valorRecebido : BigDecimal
+  troco : BigDecimal
+  status : StatusVenda
+  dataCancelamento : LocalDateTime
+  motivoCancelamento : String
+}
+class ItemVenda {
+  quantidade : Integer
+  precoUnitarioCobrado : BigDecimal
+  tipoControle : String
+  receitaApresentada : Boolean
+}
+class DadosReceita <<embeddable>> {
+  nomePaciente : String
+  nomePrescritor : String
+  registroPrescritor : String
+  numeroReceita : String
+}
+Produto <|-- Remedio
+Remedio <|-- Generico
+Produto "*" --> "1" MedidaPadrao : unidade de venda
+Remedio "*" --> "0..1" Laboratorio
+Remedio "*" --> "0..1" Formula
+Remedio "*" --> "0..1" ControleReceita
+Remedio "*" --> "0..1" Apresentacao
+Remedio "*" --> "0..1" MedidaFarmaceutica : medida das doses
+Remedio "*" --> "0..1" MedidaBasica : conteúdo e peso
+Formula "*" --> "1..*" Composicao
+Composicao "*" --> "1" PrincipioAtivo
+Composicao "*" --> "1" MedidaBasica
+Preco "*" --> "1" Produto
+Lote "*" --> "1" Produto
+MovimentacaoEstoque "*" --> "1" Lote
+Venda "1" *-- "1..*" ItemVenda
+ItemVenda "*" --> "1" Produto
+ItemVenda "*" --> "1" Lote
+ItemVenda *-- "0..1" DadosReceita
+@enduml

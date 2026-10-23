@@ -1,0 +1,156 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam monochrome true
+hide circle
+hide empty members
+entity produto {
+  * id <<PK>>
+  --
+  tipo_produto
+  nome_comercial
+  ean <<UK>>
+  estoque_minimo
+  unidade_de_medida <<FK>>
+  formula <<FK>>
+  laboratorio <<FK>>
+  controle <<FK>>
+  apresentacao <<FK>>
+  medida_doses <<FK>>
+  medida_conteudo <<FK>>
+  medida_peso <<FK>>
+  quantidade_doses
+  conteudo
+  peso_liquido
+}
+entity medida_padrao {
+  * id <<PK>>
+  --
+  sigla
+  descricao
+}
+entity laboratorio {
+  * id <<PK>>
+  --
+  marca
+  nome_fantasia
+}
+entity controle_receita {
+  * id <<PK>>
+  --
+  tipo_controle
+}
+entity apresentacao {
+  * id <<PK>>
+  --
+  sigla
+  apresentacao
+}
+entity medida_farmaceutica {
+  * id <<PK>>
+  --
+  sigla
+  descricao
+}
+entity medida_basica {
+  * id <<PK>>
+  --
+  sigla
+  nome
+}
+entity formula {
+  * id <<PK>>
+}
+entity formula_composicao {
+  * formula_id <<FK>>
+  * composicao_id <<FK>>
+}
+entity composicao {
+  * id <<PK>>
+  --
+  principio_ativo <<FK>>
+  quantia_principio
+  medida_principio <<FK>>
+  quantia_excipiente
+  medida_excipiente <<FK>>
+}
+entity principio_ativo {
+  * id <<PK>>
+  --
+  nome
+}
+entity preco {
+  * id <<PK>>
+  --
+  produto_id <<FK>>
+  valor_venda
+  data_inicio_vigencia
+}
+entity lote {
+  * id <<PK>>
+  --
+  produto_id <<FK>>
+  codigo_lote
+  data_validade
+  quantidade_atual
+}
+entity movimentacao_estoque {
+  * id <<PK>>
+  --
+  lote_id <<FK>>
+  tipo
+  quantidade
+  saldo_apos
+  data_hora
+  observacao
+  custo_unitario
+  fornecedor
+}
+entity venda {
+  * id <<PK>>
+  --
+  data_venda
+  valor_bruto
+  desconto
+  valor_total
+  forma_pagamento
+  valor_recebido
+  troco
+  status
+  data_cancelamento
+  motivo_cancelamento
+}
+entity item_venda {
+  * id <<PK>>
+  --
+  venda_id <<FK>>
+  produto_id <<FK>>
+  lote_id <<FK>>
+  quantidade
+  preco_unitario_cobrado
+  tipo_controle
+  receita_apresentada
+  receita_nome_paciente
+  receita_nome_prescritor
+  receita_registro_prescritor
+  receita_numero
+}
+medida_padrao ||--o{ produto
+laboratorio |o--o{ produto
+controle_receita |o--o{ produto
+apresentacao |o--o{ produto
+medida_farmaceutica |o--o{ produto
+medida_basica |o--o{ produto
+formula |o--o{ produto
+formula ||--|{ formula_composicao
+composicao ||--o{ formula_composicao
+principio_ativo ||--o{ composicao
+medida_basica ||--o{ composicao
+produto ||--o{ preco
+produto ||--o{ lote
+lote ||--o{ movimentacao_estoque
+venda ||--|{ item_venda
+produto ||--o{ item_venda
+lote ||--o{ item_venda
+@enduml

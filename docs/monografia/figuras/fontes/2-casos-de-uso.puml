@@ -1,0 +1,48 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam monochrome true
+left to right direction
+skinparam padding 2
+skinparam packageStyle rectangle
+actor "Funcionário\nda drogaria" as func
+
+  package "Gestão de produtos" {
+    usecase "UC01 Manter cadastros de apoio\n(laboratórios, princípios ativos,\ncomposições e fórmulas)" as UC01
+    usecase "UC02 Manter produtos\n(geral, remédio ou genérico)" as UC02
+    usecase "UC03 Consultar catálogo" as UC03
+  }
+  package "Gestão de preços" {
+    usecase "UC04 Definir preço de venda" as UC04
+    usecase "UC05 Consultar histórico de preços" as UC05
+  }
+  package "Gestão de estoque" {
+    usecase "UC06 Registrar entrada\nde mercadoria" as UC06
+    usecase "UC07 Registrar ajuste,\nperda ou devolução" as UC07
+    usecase "UC08 Consultar saldo\npor produto e lote" as UC08
+    usecase "UC09 Consultar alertas de\nvencimento e estoque mínimo" as UC09
+    usecase "UC10 Consultar movimentações" as UC10
+  }
+  package "Gestão de vendas" {
+    usecase "UC11 Registrar venda (PDV)" as UC11
+    usecase "UC12 Informar dados da receita" as UC12
+    usecase "UC13 Baixar estoque por FEFO" as UC13
+    usecase "UC14 Cancelar venda" as UC14
+    usecase "UC15 Consultar vendas\ne resumo do dia" as UC15
+  }
+func --> UC01
+func --> UC02
+func --> UC03
+func --> UC04
+func --> UC05
+func --> UC06
+func --> UC07
+func --> UC08
+func --> UC09
+func --> UC10
+func --> UC11
+func --> UC14
+func --> UC15
+UC11 ..> UC13 : <<include>>
+UC12 ..> UC11 : <<extend>>
+@enduml
